@@ -7,12 +7,9 @@ defmodule Tmate do
     import Supervisor.Spec, warn: false
 
     children = [
-      # Start the endpoint when the application starts
       supervisor(Tmate.Endpoint, []),
-      # Start the Ecto repository
       worker(Tmate.Repo, []),
-      # Here you could define other workers and supervisors as children
-      # worker(Tmate.Worker, [arg1, arg2, arg3]),
+      worker(Tmate.ProxyEndpoint, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
