@@ -12,9 +12,7 @@ config :tmate, Tmate.Endpoint,
   code_reloader: true,
   cache_static_lookup: false,
   check_origin: false,
-  static_url: [host: "localhost", port: 8080]
-  # watchers: [node: ["node_modules/webpack-dev-server/bin/webpack-dev-server.js",
-                    # "--colors", "--hot", "--inline"]]
+  static_url: [host: "localhost", port: 4080]
 
 # Watch static and templates for browser reloading.
 config :tmate, Tmate.Endpoint,
