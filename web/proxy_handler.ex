@@ -9,24 +9,27 @@ defmodule Tmate.ProxyHandler do
   import Ecto.Changeset
 
   def handle_call({:register_session, ip_address, pubkey, stoken, stoken_ro}, state) do
-    # TODO host_identity
-    %{id: sid} = %Session{host_last_ip: ip_address, active: true,
-                          stoken: stoken, stoken_ro: stoken_ro} |> Repo.insert!
-    Logger.debug("New session: #{sid} #{ip_address} #{pubkey} #{stoken} #{stoken_ro}")
-    {:reply, sid, state}
+    identity = Tmate.EctoHelpers.get_or_create!(SSHIdentity, pubkey: pubkey)
+
+    session_params = %{host_identity_id: identity.id, host_last_ip: ip_address,
+                       stoken: stoken, stoken_ro: stoken_ro}
+    %{id: sid} = Session.changeset(%Session{}, session_params) |> Repo.insert!
+
+    Logger.info("New session id=#{sid} rw=#{stoken} ro=#{stoken_ro}")
+    {:reply, {:ok, sid}, state}
   end
 
   def handle_call({:close_session, sid}, state) do
     Repo.get!(Session, sid)
-     |> change(%{active: false})
-     |> Repo.update!
+    |> change(%{closed_at: Ecto.DateTime.from_erl(:erlang.universaltime)})
+    |> Repo.update!
 
-    Logger.debug("Closed session: #{sid}")
+    Logger.info("Closed session id=#{sid}")
     {:reply, :ok, state}
   end
 
   def handle_call(args, state) do
-    Logger.debug("Unknown proxy call: #{inspect(args)}")
-    {:reply, :no_mfa, state}
+    Logger.warn("Unknown proxy call: #{inspect(args)}")
+    {:reply, {:error, :no_mfa}, state}
   end
 end
