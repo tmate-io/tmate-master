@@ -11,16 +11,19 @@ defmodule Tmate.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug :put_secure_browser_headers
+  end
+
+  scope "/api", Tmate do
+    pipe_through :api
+
+    get "/dashboard", DashboardController, :show
   end
 
   scope "/", Tmate do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/*path", PageController, :show
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", Tmate do
-  #   pipe_through :api
-  # end
 end
