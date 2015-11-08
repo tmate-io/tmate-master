@@ -17,7 +17,7 @@ defmodule Tmate.EctoHelpers do
   end
 
   def get_or_create!(model, params, create_params \\ %{}) do
-    case get_or_create(model, params) do
+    case get_or_create(model, params, create_params) do
       {:ok, instance} -> instance
       {:error, changeset} ->
         raise Ecto.InvalidChangesetError, action: :insert, changeset: changeset
