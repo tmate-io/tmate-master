@@ -8,8 +8,8 @@ defmodule Tmate do
 
     children = [
       supervisor(Tmate.Endpoint, []),
+      supervisor(Tmate.Proxy.Supervisor, []),
       worker(Tmate.Repo, []),
-      worker(Tmate.ProxyEndpoint, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
