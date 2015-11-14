@@ -4,7 +4,7 @@ defmodule Tmate.Proxy.Endpoint do
 
   alias Tmate.Repo
   alias Tmate.Session
-  alias Tmate.SSHIdentity
+  alias Tmate.Identity
   alias Tmate.Event
 
   # import Ecto.Query
@@ -43,20 +43,18 @@ defmodule Tmate.Proxy.Endpoint do
                       ws_base_url: ws_base_url,
                       stoken: stoken, stoken_ro: stoken_ro},
                     timestamp) do
-    identity = Tmate.EctoHelpers.get_or_create!(SSHIdentity, pubkey: pubkey)
+    identity = Tmate.EctoHelpers.get_or_create!(Identity, pubkey: pubkey)
 
     session_params = %{id: id, host_identity_id: identity.id, host_last_ip: ip_address,
                        ws_base_url: ws_base_url,
                        stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp}
     Session.changeset(%Session{}, session_params) |> Repo.insert!
 
-    Logger.info("New session id=#{id} rw=#{stoken} ro=#{stoken_ro}")
+    Logger.info("New session id=#{id}")
   end
 
   defp handle_event(:close_session, id, %{}, timestamp) do
-    Session.changeset(%Session{id: id}, %{closed_at: timestamp})
-    |> Repo.update!
-
+    Repo.delete(%Session{id: id})
     Logger.info("Closed session id=#{id}")
   end
 end

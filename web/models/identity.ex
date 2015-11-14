@@ -1,14 +1,14 @@
-defmodule Tmate.SSHIdentity do
+defmodule Tmate.Identity do
   use Ecto.Model
 
-  schema "ssh_identities" do
+  schema "identities" do
     belongs_to :user,            Tmate.User
     has_many   :hosted_sessions, Tmate.Session, [foreign_key: :host_identity_id]
     field      :pubkey,          :string
   end
 
-  def changeset(ssh_identity, params \\ :empty) do
-    ssh_identity
+  def changeset(identity, params \\ :empty) do
+    identity
     |> change(params)
     |> unique_constraint(:pubkey)
   end

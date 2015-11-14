@@ -25,12 +25,12 @@ defmodule Tmate.Repo.Migrations.Initial do
     create index(:sessions, [:stoken])
     create index(:sessions, [:stoken_ro])
 
-    create table(:ssh_identities) do
+    create table(:identities) do
       add :user_id, :integer
       add :pubkey,  :string, size: 1024, null: false
     end
-    create index(:ssh_identities, [:user_id])
-    create index(:ssh_identities, [:pubkey], [unique: true])
+    create index(:identities, [:user_id])
+    create index(:identities, [:pubkey], [unique: true])
 
     create table(:users, primary_key: false) do
       add :id,        :uuid,    primary_key: true, null: false
