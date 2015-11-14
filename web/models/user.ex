@@ -1,6 +1,8 @@
 defmodule Tmate.User do
   use Ecto.Model
 
+  @primary_key {:id, :binary_id, autogenerate: false}
+
   schema "users" do
     has_many :ssh_identities, Tmate.SSHIdentity
     has_many :sessions,       through: [:ssh_identities, :hosted_sessions]
@@ -8,8 +10,8 @@ defmodule Tmate.User do
     timestamps
   end
 
-  def changeset(user, params \\ :empty) do
-    user
-    |> cast(params, [:anonymous])
+  def changeset(model, params \\ :empty) do
+    model
+    |> change(params)
   end
 end

@@ -21,7 +21,7 @@ defmodule Tmate.Proxy.Listener do
     worker = :poolboy.checkout(:proxy_endpoint_pool)
     _pid = spawn fn ->
       # TODO wrapping with an extra process kinda suck.
-      # Figure out a way to do it better.
+      # Figure out a way to do it better without serializing requests.
       result = try do
         Tmate.Proxy.Endpoint.call(worker, args)
       catch
