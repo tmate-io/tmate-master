@@ -11,6 +11,8 @@ defmodule Tmate.Session do
     field      :stoken_ro,     :string
     field      :created_at,    Ecto.DateTime
     field      :closed_at,     Ecto.DateTime
+
+    has_many   :clients,       Tmate.Client
   end
 
   def changeset(model, params \\ :empty) do

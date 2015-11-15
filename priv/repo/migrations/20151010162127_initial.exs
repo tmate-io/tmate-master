@@ -32,6 +32,18 @@ defmodule Tmate.Repo.Migrations.Initial do
     create index(:identities, [:user_id])
     create index(:identities, [:pubkey], [unique: true])
 
+    create table(:clients, primary_key: false) do
+      add :session_id,  :uuid,    null: false
+      add :client_id,   :integer, null: false
+      add :ip_address,  :string,  null: false
+      add :type,        :string,  null: false
+      add :joined_at,   :datetime
+      add :identity_id, :integer
+    end
+    create index(:clients, [:session_id, :client_id], [unique: true])
+    create index(:clients, [:session_id])
+    create index(:clients, [:client_id])
+
     create table(:users, primary_key: false) do
       add :id,        :uuid,    primary_key: true, null: false
       add :anonymous, :boolean, null: false
