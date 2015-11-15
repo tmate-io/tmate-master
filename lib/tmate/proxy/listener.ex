@@ -26,11 +26,11 @@ defmodule Tmate.Proxy.Listener do
         Tmate.Proxy.Endpoint.call(worker, args)
       catch
         :exit, _ ->
-          {:reply, {:error, :proc_exit}}
+          {:reply, {:error, :internal_error}}
       rescue
         err ->
           Logger.warn(inspect(err))
-          {:reply, {:error, :exception, err}}
+          {:reply, {:error, :internal_error}}
       after
         :poolboy.checkin(:proxy_endpoint_pool, worker)
       end

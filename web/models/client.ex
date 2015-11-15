@@ -7,7 +7,6 @@ defmodule Tmate.Client do
     belongs_to :session,  Tmate.Session, type: :binary_id, references: [:id]
     field :client_id,     :integer
     field :ip_address,    :string
-    field :type,          :string
     field :joined_at,     Ecto.DateTime
     belongs_to :identity, Tmate.Identity, references: [:id]
   end

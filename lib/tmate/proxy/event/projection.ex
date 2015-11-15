@@ -11,7 +11,7 @@ defmodule Tmate.Proxy.Event.Projection do
   def handle_event(:session_register, id, timestamp,
                    %{ip_address: ip_address, pubkey: pubkey, ws_base_url: ws_base_url,
                      stoken: stoken, stoken_ro: stoken_ro}) do
-    identity = Tmate.EctoHelpers.get_or_create!(Identity, pubkey: pubkey)
+    identity = Tmate.EctoHelpers.get_or_create!(Identity, type: "ssh", key: pubkey)
 
     session_params = %{id: id, host_identity_id: identity.id, host_last_ip: ip_address,
                        ws_base_url: ws_base_url,
@@ -27,14 +27,12 @@ defmodule Tmate.Proxy.Event.Projection do
   end
 
   def handle_event(:session_join, sid, timestamp,
-                   %{id: cid, ip_address: ip_address, type: type} = params) do
+                   %{id: cid, ip_address: ip_address, type: type, identity: key}) do
     client_params = %{session_id: sid, client_id: cid,
-                      ip_address: ip_address, type: "#{type}", joined_at: timestamp}
+                      ip_address: ip_address, joined_at: timestamp}
 
-    if params[:type] == :ssh do
-      identity = Tmate.EctoHelpers.get_or_create!(Identity, pubkey: params[:pubkey])
-      client_params = Map.merge(client_params, %{identity_id: identity.id})
-    end
+    identity = Tmate.EctoHelpers.get_or_create!(Identity, type: to_string(type), key: key)
+    client_params = Map.merge(client_params, %{identity_id: identity.id})
 
     Client.changeset(%Client{}, client_params) |> Repo.insert!
 

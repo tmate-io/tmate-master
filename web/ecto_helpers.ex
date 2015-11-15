@@ -2,18 +2,22 @@ defmodule Tmate.EctoHelpers do
   alias Tmate.Repo
   import Ecto.Query
 
-  def get_or_create(model, params=[{key, value}], create_params \\ %{}) do
+  def get_or_create(model, params, create_params, retry) do
     case Repo.get_by(model, params) do
       nil ->
-        new_params = Map.put(create_params, key, value)
-        case model.changeset(model.__struct__, new_params) |> Repo.insert do
-          {:ok, instance} -> {:ok, instance}
-          {:error, %{constraints: [%{field: ^key, type: :unique}]}} ->
+        new_params = Map.merge(create_params, params |> Enum.into(%{}))
+        case {model.changeset(model.__struct__, new_params) |> Repo.insert, retry} do
+          {{:ok, instance}, _} -> {:ok, instance}
+          {{:error, %{constraints: [%{field: _, type: :unique}]}}, true} ->
             get_or_create(model, params, create_params)
-          {:error, changeset} -> {:error, changeset}
+          {{:error, changeset}, _} -> {:error, changeset}
         end
       instance -> {:ok, instance}
     end
+  end
+
+  def get_or_create(model, params, create_params \\ %{}) do
+    get_or_create(model, params, create_params, true)
   end
 
   def get_or_create!(model, params, create_params \\ %{}) do
