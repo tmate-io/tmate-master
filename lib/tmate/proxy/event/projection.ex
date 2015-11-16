@@ -27,9 +27,11 @@ defmodule Tmate.Proxy.Event.Projection do
   end
 
   def handle_event(:session_join, sid, timestamp,
-                   %{id: cid, ip_address: ip_address, type: type, identity: key}) do
+                   %{id: cid, ip_address: ip_address, type: type,
+                     identity: key, readonly: readonly}) do
+
     client_params = %{session_id: sid, client_id: cid,
-                      ip_address: ip_address, joined_at: timestamp}
+                      ip_address: ip_address, joined_at: timestamp, readonly: readonly}
 
     identity = Tmate.EctoHelpers.get_or_create!(Identity, type: to_string(type), key: key)
     client_params = Map.merge(client_params, %{identity_id: identity.id})

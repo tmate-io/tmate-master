@@ -32,8 +32,9 @@ defmodule Tmate.Endpoint do
 
   plug Plug.Session,
     store: :cookie,
-    key: "_tmate_key",
-    signing_salt: "dDwmGvJ1"
+    key: "tmate_session",
+    signing_salt: "PlqZqmWt",
+    encryption_salt: "vIeLihup"
 
   plug Tmate.Router
 end

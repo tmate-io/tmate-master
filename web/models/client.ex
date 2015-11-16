@@ -8,6 +8,7 @@ defmodule Tmate.Client do
     field :client_id,     :integer
     field :ip_address,    :string
     field :joined_at,     Ecto.DateTime
+    field :readonly,      :boolean
     belongs_to :identity, Tmate.Identity, references: [:id]
   end
 

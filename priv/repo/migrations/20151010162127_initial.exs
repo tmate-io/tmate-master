@@ -2,9 +2,9 @@ defmodule Tmate.Repo.Migrations.Initial do
   use Ecto.Migration
 
   def change do
-    create table(:events, primary_key: false) do
+    create table(:events) do
       add :type,      :string,   null: false
-      add :entity_id, :uuid,     null: false
+      add :entity_id, :uuid
       add :timestamp, :datetime, null: false
       add :params,    :map,      null: false
     end
@@ -34,9 +34,10 @@ defmodule Tmate.Repo.Migrations.Initial do
     create table(:clients, primary_key: false) do
       add :session_id,  references(:sessions, type: :uuid, on_delete: :delete_all), null: false
       add :identity_id, references(:identities, type: :integer), null: false
-      add :client_id,   :integer, null: false
-      add :ip_address,  :string,  null: false
-      add :joined_at,   :datetime
+      add :client_id,   :integer,  null: false
+      add :ip_address,  :string,   null: false
+      add :joined_at,   :datetime, null: false
+      add :readonly,    :boolean,  null: false
     end
     create index(:clients, [:session_id, :client_id], [unique: true])
     create index(:clients, [:session_id])

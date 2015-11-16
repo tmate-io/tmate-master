@@ -1,8 +1,6 @@
 defmodule Tmate.Event do
   use Ecto.Model
 
-  @primary_key false
-
   schema "events" do
     field :type,      :string
     field :entity_id, Ecto.UUID
