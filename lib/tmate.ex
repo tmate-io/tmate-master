@@ -7,6 +7,7 @@ defmodule Tmate do
     import Supervisor.Spec, warn: false
 
     children = [
+      supervisor(Tmate.Redis, []),
       supervisor(Tmate.Endpoint, []),
       supervisor(Tmate.Proxy.Supervisor, []),
       worker(Tmate.Repo, []),

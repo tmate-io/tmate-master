@@ -36,6 +36,7 @@ defmodule Tmate.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:poolboy, "~> 1.0"},
      {:uuid, "~> 1.1" },
+     {:redix, ">= 0.0.0"},
      {:poison, "~> 1.0"},
      {:cowboy, "~> 1.0"}]
   end
