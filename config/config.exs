@@ -32,3 +32,7 @@ config :redis, Tmate,
   url: "redis://localhost:6379/0",
   pool_size: 2,
   pool_max_overflow: 2
+
+config :tmate, :ssh,
+  host: "localhost",
+  port: 2200

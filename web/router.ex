@@ -19,6 +19,10 @@ defmodule Tmate.Router do
     pipe_through :api
 
     get "/dashboard", DashboardController, :show
+
+    scope "/user" do
+      post "/request_identification", UserController, :request_identification
+    end
   end
 
   scope "/", Tmate do

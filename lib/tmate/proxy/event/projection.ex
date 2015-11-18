@@ -47,6 +47,11 @@ defmodule Tmate.Proxy.Event.Projection do
     Logger.info("Client left session sid=#{sid}, cid=#{cid}")
   end
 
+  def handle_event(:associate_ssh_identity, web_identity, _timestamp, %{pubkey: pubkey}) do
+    # TODO
+    # Logger.info("Associated identities")
+  end
+
   def handle_event(event_type, _, _, _) do
     Logger.debug("No projection for event #{event_type}")
   end
