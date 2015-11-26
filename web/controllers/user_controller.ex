@@ -30,7 +30,7 @@ defmodule Tmate.UserController do
     conn |> json %{cmd: cmd}
   end
 
-  def generate_token do
+  defp generate_token do
     base_len = length(@token_base)
     (0..10)
     |> Enum.map(fn _ -> @token_base |> Enum.at(:crypto.rand_uniform(0, base_len-1)) end)

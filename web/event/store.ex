@@ -1,4 +1,4 @@
-defmodule Tmate.Proxy.Event.Store do
+defmodule Tmate.Event.Store do
   alias Tmate.Event
   alias Tmate.Repo
 

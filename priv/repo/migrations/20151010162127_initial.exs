@@ -42,5 +42,14 @@ defmodule Tmate.Repo.Migrations.Initial do
     create index(:clients, [:session_id, :client_id], [unique: true])
     create index(:clients, [:session_id])
     create index(:clients, [:client_id])
+
+    create table(:users, primary_key: false) do
+      add :id,                  :uuid,   primary_key: true
+      add :email,               :string, null: false
+      add :name,                :string, null: false
+      add :nickname,            :string, null: false
+      add :github_login,        :string
+      add :github_access_token, :string
+    end
   end
 end

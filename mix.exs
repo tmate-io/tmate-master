@@ -18,7 +18,7 @@ defmodule Tmate.Mixfile do
   def application do
     [mod: {Tmate, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :oauth2]]
   end
 
   # Specifies which paths to compile per environment
@@ -35,6 +35,7 @@ defmodule Tmate.Mixfile do
      {:phoenix_html, "~> 2.1"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:poolboy, "~> 1.0"},
+     {:oauth2, ">= 0.0.0"},
      {:uuid, "~> 1.1" },
      {:redix, ">= 0.0.0"},
      {:poison, "~> 1.0"},

@@ -1,4 +1,4 @@
-defmodule Tmate.Proxy.Event.Projection do
+defmodule Tmate.Event.Projection do
   require Logger
 
   alias Tmate.Identity

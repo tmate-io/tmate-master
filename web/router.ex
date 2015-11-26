@@ -25,6 +25,14 @@ defmodule Tmate.Router do
     end
   end
 
+  scope "/auth", Tmate do
+    pipe_through :browser
+
+    post "/register",        AuthController, :register
+    get  "/github/init",     AuthController, :init_github_auth
+    get  "/github/callback", AuthController, :github_callback
+  end
+
   scope "/", Tmate do
     pipe_through :browser
 
