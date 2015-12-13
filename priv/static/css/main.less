@@ -1,0 +1,169 @@
+body {
+  background-color: #111;
+  background-image: url('/img/rebel.png');
+  color: #aaa;
+}
+
+::-webkit-selection { color: black; background: rgba(178, 104, 24, 0.99); }
+   ::-moz-selection { color: black; background: rgba(178, 104, 24, 0.99); }
+        ::selection { color: black; background: rgba(178, 104, 24, 0.99); }
+
+h1, h2, h3, h4, h5, h6 {
+  color: #bbb;
+}
+
+p {
+  text-align: justify;
+}
+
+.hero-unit {
+  margin-top: 50px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.3);
+
+  -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+     -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+          box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+
+  h1 { color: #fff; text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.4); }
+  h2 { color: #ccc; }
+  p { text-align: center; }
+}
+
+hr {
+  border-bottom: 1px solid #3b3b3b;
+  border-top: 0;
+  margin-top: 35px;
+
+  margin-top: 60px;
+  margin-bottom: 50px;
+}
+
+code, pre {
+  font-family: "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+  line-height: 1.3em;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #bbb;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+     -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+          box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+  border: 0;
+}
+
+.fig {
+  -webkit-box-shadow: rgba(255, 255, 255, 0.05) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+     -moz-box-shadow: rgba(255, 255, 255, 0.05) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+          box-shadow: rgba(255, 255, 255, 0.05) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
+
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-bottom: 1em;
+}
+
+p.fig-label {
+  text-align: center;
+  span { font-weight: bold; }
+  margin-bottom: 2em;
+}
+
+.video {
+  margin-top: 10px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0 4px 10px;
+     -moz-box-shadow: rgba(0, 0, 0, 0.5) 0 4px 10px;
+          box-shadow: rgba(0, 0, 0, 0.5) 0 4px 10px;
+}
+
+.video.linux {
+  background-image: url('/img/video_linux_first_frame.png');
+  height: 285px;
+  width: 413px;
+  margin-left: 30px;
+}
+
+.video.macos {
+  background-image: url('/img/video_macos_first_frame.png');
+  height: 285px;
+  width: 409px;
+  float: right;
+  margin-right: 30px;
+}
+
+.steps {
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: -40px;
+  width: 720px;
+  height: 50px;
+  h3 {
+    width: 240px;
+    float: left;
+    display: none;
+    margin-top: 0;
+    margin-bottom: -40px;
+    height: 50px;
+  }
+}
+
+.nav-tabs {
+  border-bottom: 1px solid #3b3b3b;
+}
+
+.nav-tabs > li {
+  margin-bottom: -1px;
+}
+
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus {
+  border-color: #3b3b3b;
+}
+
+.nav-tabs > .active > a,
+.nav-tabs > .active > a:hover,
+.nav-tabs > .active > a:focus {
+  color: #aaa;
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid #3b3b3b;
+  border-bottom-color: transparent;
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+  text-decoration: none;
+  color: #0088cc;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.footer {
+  width: 100%;
+  height: 140px;
+  margin-top: 40px;
+  padding-top: 30px;
+  background-color: rgba(0, 0, 0, 0.5);
+  .digitalocean {
+    p {
+      text-align: center;
+    }
+  }
+}
+
+.social-buttons {
+  margin-top: 10px;
+  margin-bottom: -30px;
+}
+
+.social-buttons .twitter {
+  display: inline;
+  margin-top: 8px;
+  margin-right: 17px;
+}
+
+.social-buttons .github {
+  display: inline;
+}
