@@ -36,6 +36,7 @@ defmodule Tmate.Router do
   scope "/", Tmate do
     pipe_through :browser
 
+    get "/", StaticController, :home
     get "/*path", PageController, :show
   end
 end
