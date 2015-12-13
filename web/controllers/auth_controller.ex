@@ -33,7 +33,7 @@ defmodule Tmate.AuthController do
   end
 
   defp continue_github_registration(conn, access_token, login, name, emails) do
-    validated_emails = filter_emails(emails, & &1["validated"])
+    validated_emails = filter_emails(emails, & &1["verified"])
     conn
     |> put_session(:github_registration, %{access_token: access_token, login: login, validated_emails: validated_emails})
     |> redirect(to: "/register?#{URI.encode_query(%{type: :github, login: login, name: name, email: validated_emails |> Enum.at(0)})}")
@@ -43,11 +43,13 @@ defmodule Tmate.AuthController do
     emails |> Enum.filter(fun) |> Enum.map(& Dict.get(&1, "email"))
   end
 
-  def register(conn, %{}) do
-    %{access_token: access_token, login: github_login, validated_emails: validated_emails} = get_session(conn, :github_registration)
+  def register(conn, %{"email" => email, "name" => name, "nickname" => nickname}) do
+    # WIP
 
-    user_id = UUID.uuid1()
-    Tmate.Event.emit(:user_create, user_id, %{email: email, name: name, github_login: login, github_access_token: access_token})
+    # %{access_token: access_token, login: github_login, validated_emails: validated_emails} = get_session(conn, :github_registration)
+
+    # user_id = UUID.uuid1()
+    # Tmate.Event.emit(:user_create, user_id, %{email: email, name: name, github_login: login, github_access_token: access_token})
   end
 
   defmodule GitHub do
