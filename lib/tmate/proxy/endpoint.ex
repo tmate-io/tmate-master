@@ -13,13 +13,25 @@ defmodule Tmate.Proxy.Endpoint do
     {:reply, GenServer.call(endpoint, args, :infinity)}
   end
 
-  def handle_call({:event, timestamp, event_type, entity_id, params}, _from, state) do
+  def handle_call(args, _from, state) do
+    try do
+      handle_call(args, state)
+    rescue
+      exception ->
+        stacktrace = System.stacktrace()
+        # inspect() because Poison doesn't like tuples
+        Rollbax.report(exception, stacktrace, %{args: inspect(args)})
+        reraise(exception, stacktrace)
+    end
+  end
+
+  def handle_call({:event, timestamp, event_type, entity_id, params}, state) do
     {:ok, ecto_timestamp} = Ecto.DateTime.cast(timestamp)
     Tmate.Event.emit(event_type, entity_id, ecto_timestamp, params)
     {:reply, :ok, state}
   end
 
-  def handle_call({:identify_client, token, username, ip_address, pubkey}, _from, state) do
+  def handle_call({:identify_client, token, username, ip_address, pubkey}, state) do
     token_key = "identify_token:#{token}"
     stdout = case Tmate.Redis.command(["GET", token_key]) do
       {:ok, nil} -> "Invalid identification :(\nYou may try again"

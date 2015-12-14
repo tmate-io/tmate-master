@@ -8,12 +8,13 @@
     <title>tmate</title>
     <style>
       body { background-color: #272B30; color: #C8C8C8; }
-      body > p.loading { margin: auto; margin-top: 100px; width: 200px; }
+      body > #app-container > p.loading { margin: auto; margin-top: 100px; width: 200px; }
     </style>
   </head>
 
   <body>
-    <%= @inner %>
+    <div id="app-container"><%= @inner %></div>
+    <script><%= {:safe, render("_rollbar.js")} %></script>
     <script src="<%= static_url(@conn, "/js/index.js") %>"></script>
   </body>
 </html>

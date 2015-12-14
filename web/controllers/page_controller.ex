@@ -2,7 +2,7 @@ defmodule Tmate.PageController do
   use Tmate.Web, :controller
 
   def show(conn, _params) do
-    conn = set_identity(conn)
+    # conn = set_identity(conn)
     render(conn, "show.html")
   end
 

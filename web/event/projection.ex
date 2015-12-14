@@ -21,8 +21,8 @@ defmodule Tmate.Event.Projection do
     Logger.info("New session id=#{id}")
   end
 
-  def handle_event(:session_close, id, _timestamp, _params) do
-    Repo.delete(%Session{id: id})
+  def handle_event(:session_close, id, timestamp, _params) do
+    Session.changeset(%Session{id: id}, %{closed_at: timestamp}) |> Repo.update
     Logger.info("Closed session id=#{id}")
   end
 

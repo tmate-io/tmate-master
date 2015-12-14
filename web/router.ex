@@ -1,6 +1,8 @@
 defmodule Tmate.Router do
   use Tmate.Web, :router
 
+  use Rollbax.Plug
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -19,6 +21,7 @@ defmodule Tmate.Router do
     pipe_through :api
 
     get "/dashboard", DashboardController, :show
+    get "/t/:token", SessionController, :show
 
     scope "/user" do
       post "/request_identification", UserController, :request_identification

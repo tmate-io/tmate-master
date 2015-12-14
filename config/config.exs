@@ -14,6 +14,12 @@ config :tmate, Tmate.Endpoint,
   pubsub: [name: Tmate.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :logger,
+  backends: [:console, Rollbax.Notifier]
+
+config :logger, Rollbax.Notifier,
+  level: :error
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
@@ -36,3 +42,10 @@ config :redis, Tmate,
 config :tmate, :ssh,
   host: "localhost",
   port: 2200
+
+config :tmate, :rollbar,
+  token: "ac9fa1686f8549d89fc092ad081f3128"
+
+config :rollbax,
+  access_token: "cbf96daf284c4c85b608e86aa3def4c0",
+  environment: Mix.env
