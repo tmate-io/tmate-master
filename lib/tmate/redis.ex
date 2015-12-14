@@ -6,7 +6,7 @@ defmodule Tmate.Redis do
   end
 
   def init([]) do
-    {:ok, opts} = Application.fetch_env(:redis, Tmate)
+    {:ok, opts} = Application.fetch_env(:tmate, :redis)
 
     pool_opts = [
       name: {:local, :redix_poolboy},

@@ -34,7 +34,7 @@ config :phoenix, :generators,
   migration: true,
   binary_id: false
 
-config :redis, Tmate,
+config :tmate, :redis,
   url: "redis://localhost:6379/0",
   pool_size: 2,
   pool_max_overflow: 2

@@ -4,7 +4,7 @@ defmodule Tmate.Mixfile do
   def project do
     [app: :tmate,
      version: "0.0.1",
-     elixir: "~> 1.0",
+     elixir: "~> 1.1",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -39,6 +39,7 @@ defmodule Tmate.Mixfile do
      {:uuid, "~> 1.1" },
      {:redix, ">= 0.0.0"},
      {:rollbax, ">= 0.0.0"},
+     {:exrm, ">= 0.0.0"},
      {:poison, "~> 1.0"},
      {:cowboy, "~> 1.0"}]
   end
