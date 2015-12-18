@@ -35,16 +35,12 @@ config :phoenix, :generators,
   binary_id: false
 
 config :tmate, :redis,
-  url: "redis://localhost:6379/0",
   pool_size: 2,
   pool_max_overflow: 2
 
-config :tmate, :ssh,
-  host: "localhost",
-  port: 2200
-
 config :tmate, :rollbar,
-  token: "ac9fa1686f8549d89fc092ad081f3128"
+  token: "ac9fa1686f8549d89fc092ad081f3128",
+  environment: Mix.env
 
 config :rollbax,
   access_token: "cbf96daf284c4c85b608e86aa3def4c0",

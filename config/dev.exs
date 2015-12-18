@@ -12,7 +12,8 @@ config :tmate, Tmate.Endpoint,
   code_reloader: true,
   cache_static_lookup: false,
   check_origin: false,
-  static_url: [host: "localhost", port: 4080]
+  static_url: [host: "localhost", port: 4080],
+  host_url: "http://localhost:4000"
 
 # Watch static and templates for browser reloading.
 config :tmate, Tmate.Endpoint,
@@ -41,9 +42,9 @@ config :tmate, Tmate.Repo,
   hostname: "localhost",
   pool_size: 10
 
-config :tmate, Tmate.Endpoint,
-  host_url: "http://localhost:4000"
-
 config :tmate, :github_oauth,
   client_id: "36b15709e1e30f74ae42",
   client_secret: "88eda947d8e7f1a3b240ff805817da76f41d4ffa"
+
+config :tmate, :redis,
+  url: "redis://localhost:6379/0"
