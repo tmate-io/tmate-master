@@ -13,6 +13,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :tmate, Tmate.Endpoint,
   http: [port: 80],
+  url: [host: "tmate.io", port: 443],
   host_url: "https://tmate.io",
   static_url: [path: "/"],
   force_ssl: [hsts: true]

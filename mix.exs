@@ -3,7 +3,7 @@ defmodule Tmate.Mixfile do
 
   def project do
     [app: :tmate,
-     version: "0.0.1",
+     version: "0.0.5",
      elixir: "~> 1.1",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
