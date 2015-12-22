@@ -15,7 +15,6 @@ config :tmate, Tmate.Endpoint,
   http: [port: 80],
   url: [host: "tmate.io", port: 443],
   host_url: "https://tmate.io",
-  static_url: [path: "/"],
   force_ssl: [hsts: true]
 
 # Do not print debug messages in production
