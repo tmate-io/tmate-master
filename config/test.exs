@@ -20,3 +20,5 @@ config :tmate, Tmate.Repo,
   database: "tmate_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :rollbax, enabled: false
