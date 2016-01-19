@@ -40,7 +40,8 @@ config :tmate, :redis,
 
 config :tmate, :rollbar,
   token: "ac9fa1686f8549d89fc092ad081f3128",
-  environment: Mix.env
+  environment: Mix.env,
+  code_version: :os.cmd('git rev-parse --verify HEAD') |> to_string |> String.strip
 
 config :rollbax,
   access_token: "cbf96daf284c4c85b608e86aa3def4c0",
