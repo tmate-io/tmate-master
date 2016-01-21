@@ -7,7 +7,7 @@ config :tmate, Tmate.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: if System.get_env("DEBUG"), do: :debug, else: :warn
 
 # Set a higher stacktrace during test
 config :phoenix, :stacktrace_depth, 20

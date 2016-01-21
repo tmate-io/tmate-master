@@ -17,9 +17,10 @@ defmodule Tmate.ModelCase do
   using do
     quote do
       alias Tmate.Repo
-      import Ecto.Model
+      import Ecto.Model, except: [build: 2]
       import Ecto.Query, only: [from: 2]
       import Tmate.ModelCase
+      import Tmate.Factory
     end
   end
 
@@ -55,5 +56,30 @@ defmodule Tmate.ModelCase do
   """
   def errors_on(model, data) do
     model.__struct__.changeset(model, data).errors
+  end
+
+  setup do
+    {:ok, pid} = Tmate.Proxy.Endpoint.start_link(name: Tmate.Proxy.Endpoint)
+    :ok
+  end
+
+  def emit_event(event) do
+    {m, params} = Map.split(event, [:event_type, :entity_id])
+    emit_raw_event(m[:event_type], m[:entity_id], params)
+    event
+  end
+
+  def emit_raw_event(event_type, entity_id, params) do
+    timestamp = current_timestamp()
+    {:reply, :ok} = Tmate.Proxy.Endpoint.call(Tmate.Proxy.Endpoint,
+                     {:event, timestamp, event_type, entity_id, params})
+  end
+
+  defp current_timestamp() do
+    # from Ecto lib.
+    erl_timestamp = :os.timestamp
+    {_, _, usec} = erl_timestamp
+    {date, {h, m, s}} = :calendar.now_to_datetime(erl_timestamp)
+    {date, {h, m, s, usec}}
   end
 end

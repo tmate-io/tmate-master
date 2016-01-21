@@ -8,7 +8,7 @@ defmodule Tmate.Event do
     field :params,    :map
   end
 
-  def changeset(model, params \\ :empty) do
+  def changeset(model, params \\ %{}) do
     model
     |> change(params)
   end

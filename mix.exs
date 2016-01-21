@@ -41,6 +41,7 @@ defmodule Tmate.Mixfile do
      {:rollbax, ">= 0.0.0"},
      {:exrm, ">= 0.0.0"},
      {:poison, "~> 1.0"},
+     {:ex_machina, ">= 0.0.0", only: :test},
      {:cowboy, "~> 1.0"}]
   end
 end

@@ -2,30 +2,42 @@ defmodule Tmate.EctoHelpers do
   alias Tmate.Repo
   import Ecto.Query
 
-  def get_or_create(model, params, create_params, retry) do
-    case Repo.get_by(model, params) do
+  def get_or_create(changeset, key, retry) when is_atom(key) do
+    get_or_create(changeset, [key], retry)
+  end
+
+  def get_or_create(changeset, query_keys, retry) do
+    params = Enum.map(query_keys, fn key ->
+      {_, value} = Ecto.Changeset.fetch_field(changeset, key)
+      {key, value}
+    end) |> Enum.into(%{})
+
+    case Repo.get_by(changeset.model.__struct__, params) do
       nil ->
-        new_params = Map.merge(create_params, params |> Enum.into(%{}))
-        case {model.changeset(model.__struct__, new_params) |> Repo.insert, retry} do
+        case {Repo.insert(changeset), retry} do
           {{:ok, instance}, _} -> {:ok, instance}
           {{:error, %{constraints: [%{field: _, type: :unique}]}}, true} ->
-            get_or_create(model, params, create_params)
+            get_or_create(changeset, query_keys, false)
           {{:error, changeset}, _} -> {:error, changeset}
         end
       instance -> {:ok, instance}
     end
   end
 
-  def get_or_create(model, params, create_params \\ %{}) do
-    get_or_create(model, params, create_params, true)
+  def get_or_create(changeset, query_keys) do
+    get_or_create(changeset, query_keys, true)
   end
 
-  def get_or_create!(model, params, create_params \\ %{}) do
-    case get_or_create(model, params, create_params) do
+  def get_or_create!(changeset, query_keys) do
+    case get_or_create(changeset, query_keys) do
       {:ok, instance} -> instance
       {:error, changeset} ->
         raise Ecto.InvalidChangesetError, action: :insert, changeset: changeset
     end
+  end
+
+  def get_or_create!(changeset) do
+    get_or_create(changeset, Keyword.keys(Ecto.Model.primary_key(changeset.model)))
   end
 
   def last(model) do

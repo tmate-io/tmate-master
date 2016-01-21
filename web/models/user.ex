@@ -11,7 +11,7 @@ defmodule Tmate.User do
     field :github_access_token, :string
   end
 
-  def changeset(model, params \\ :empty) do
+  def changeset(model, params \\ %{}) do
     model
     |> change(params)
   end
