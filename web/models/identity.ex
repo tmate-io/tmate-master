@@ -1,10 +1,11 @@
 defmodule Tmate.Identity do
   use Ecto.Model
+  import Ecto.Query
 
   schema "identities" do
-    field :type, :string
-    field :key,  :string
-    field :hash, :string
+    field :type,     :string
+    field :key,      :string
+    field :metadata, :map
 
     has_many :hosted_sessions, Tmate.Session, foreign_key: :host_identity_id
     has_many :clients,         Tmate.Client
@@ -13,22 +14,14 @@ defmodule Tmate.Identity do
   def changeset(identity, params \\ %{}) do
     identity
     |> change(params)
-    |> update_hash
-    |> unique_constraint(:hash)
+    |> unique_constraint(:type_key)
   end
 
-  defp update_hash(changeset) do
-    if get_change(changeset, :type) || get_change(changeset, :key) do
-      {_, type} = fetch_field(changeset, :type)
-      {_, key} = fetch_field(changeset, :key)
-      changeset |> put_change(:hash, get_hash(type, key))
-    else
-      changeset
-    end
+  def key_hash(pubkey) do
+    "SHA256:#{:crypto.hash(:sha256, Base.decode64!(pubkey)) |> Base.encode64}"
   end
 
-  defp get_hash(type, key) do
-    hash = :crypto.hash(:sha256, key) |> Base.encode64
-    "#{type}:SHA256:#{hash}"
+  def type(query, type) do
+    query |> where([i], i.type == ^type)
   end
 end

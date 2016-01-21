@@ -9,8 +9,13 @@ defmodule Tmate.Event.Projection do
   import Ecto.Query
 
   defp get_or_create_identity!(type, key) do
-    identity = Identity.changeset(%Identity{}, %{type: type, key: key})
-    Tmate.EctoHelpers.get_or_create!(identity, :hash)
+    params = case type do
+      "ssh" -> %{type: type, key: Identity.key_hash(key), metadata: %{pubkey: key}}
+      _ -> %{type: type, key: key}
+    end
+
+    identity = Identity.changeset(%Identity{}, params)
+    Tmate.EctoHelpers.get_or_create!(identity, [:type, :key])
   end
 
   def handle_event(:session_register, id, timestamp,

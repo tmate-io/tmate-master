@@ -23,7 +23,18 @@ defmodule SessionCaseTest do
     assert session.stoken_ro    == session_event.stoken_ro
     assert session.ws_base_url  == session_event.ws_base_url
     assert session.host_identity.type == "ssh"
-    assert session.host_identity.key  == session_event.pubkey
+    assert session.host_identity.metadata["pubkey"] == session_event.pubkey
+  end
+
+  test "really long ssh keys" do
+    session_event = build(:event_session_register, pubkey: Base.encode64(String.duplicate("X", 10000)))
+    emit_event(session_event)
+
+    session = Repo.get(Session, session_event.entity_id)
+    session = Repo.preload(session, :host_identity)
+
+    assert session.host_identity.type == "ssh"
+    assert session.host_identity.metadata["pubkey"] == session_event.pubkey
   end
 
   test "event session_close" do
@@ -41,7 +52,8 @@ defmodule SessionCaseTest do
   test "client join" do
     session_event = emit_event(build(:event_session_register))
     client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
-    client2_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id, readonly: true))
+    client2_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id,
+                                     type: "web", identity: "xxx", readonly: true))
 
     session = Repo.get(Session, session_event.entity_id)
     session = Repo.preload(session, :clients)
@@ -57,7 +69,7 @@ defmodule SessionCaseTest do
     assert client1.ip_address    == client1_event.ip_address
     assert client1.readonly      == client1_event.readonly
     assert client1.identity.type == client1_event.type
-    assert client1.identity.key  == client1_event.identity
+    assert client1.identity.metadata["pubkey"] == client1_event.identity
 
     assert client2.client_id     == client2_event.id
     assert client2.ip_address    == client2_event.ip_address
