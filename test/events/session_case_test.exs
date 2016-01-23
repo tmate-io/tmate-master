@@ -49,6 +49,15 @@ defmodule SessionCaseTest do
     assert session.closed_at != nil
   end
 
+  test "event session_close remove clients" do
+    session_event = emit_event(build(:event_session_register))
+    _client_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
+
+    assert Repo.one(from Client, select: count("*")) == 1
+    _close_event = emit_event(build(:event_session_close, entity_id: session_event.entity_id))
+    assert Repo.one(from Client, select: count("*")) == 0
+  end
+
   test "client join" do
     session_event = emit_event(build(:event_session_register))
     client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
