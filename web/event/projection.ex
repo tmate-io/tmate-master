@@ -19,12 +19,13 @@ defmodule Tmate.Event.Projection do
   end
 
   def handle_event(:session_register, id, timestamp,
-                   %{ip_address: ip_address, pubkey: pubkey, ws_base_url: ws_base_url,
+                   %{ip_address: ip_address, pubkey: pubkey,
+                     ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
                      stoken: stoken, stoken_ro: stoken_ro}) do
     identity = get_or_create_identity!("ssh", pubkey)
 
     session_params = %{id: id, host_identity_id: identity.id, host_last_ip: ip_address,
-                       ws_base_url: ws_base_url,
+                       ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
                        stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp}
     Session.changeset(%Session{}, session_params) |> Tmate.EctoHelpers.get_or_create!
 
