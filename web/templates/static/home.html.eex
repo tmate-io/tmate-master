@@ -16,7 +16,9 @@ configuration files.</li><li>Your mates will be using your tmux config and your 
 <code>-2</code> as you may be used to do with tmux.</li></ul></div></div><hr /><div class="row"><div class="span12"><h2>Running tmate as a daemon</h2><p>You can run tmate detached, and retrieve the SSH connection strings as follow:</p><pre>tmate -S /tmp/tmate.sock new-session -d               # Launch tmate in a detached state
 tmate -S /tmp/tmate.sock wait tmate-ready             # Blocks until the SSH connection is established
 tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'    # Prints the SSH connection string
-tmate -S /tmp/tmate.sock display -p '#{tmate_ssh_ro}' # Prints the read-only SSH connection string</pre><p>Note that it is important to specify a socket (e.g.  <code>/tmp/dev.sock</code>)
+tmate -S /tmp/tmate.sock display -p '#{tmate_ssh_ro}' # Prints the read-only SSH connection string
+tmate -S /tmp/tmate.sock display -p '#{tmate_web}'    # Prints the web connection string
+tmate -S /tmp/tmate.sock display -p '#{tmate_web_ro}' # Prints the read-only web connection string</pre><p>Note that it is important to specify a socket (e.g.  <code>/tmp/dev.sock</code>)
 as tmate uses a random socket name by default.</p><p>You can think of tmate as a reverse ssh tunnel accessible from anywhere.</p></div></div><hr /><div class="row"><div class="span12"><h2>Host your own tmate server</h2><p>The server sources are located at <a href="https://github.com/tmate-io/tmate-slave">https://github.com/tmate-io/tmate-slave</a>.</p><p>You need a Linux distribution as tmate utilizes linux specific features.</p><p>tmate also depends on a couple of packages. On Ubuntu, the packages are:<br />
 git-core build-essential pkg-config libtool libevent-dev libncurses-dev zlib1g-dev automake libssh-dev cmake ruby</p><p>Once all the prerequisites are satisfied, you can install tmate-slave with:</p><pre>git clone https://github.com/tmate-io/tmate-slave.git && cd tmate-slave
 ./create_keys.sh # This will generate SSH keys, remember the keys fingerprints.
