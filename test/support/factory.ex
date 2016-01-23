@@ -6,7 +6,8 @@ defmodule Tmate.Factory do
       entity_id: UUID.uuid1,
       ip_address: sequence(:ip, &"1.1.1.#{&1}"),
       pubkey: sequence(:pubkey, & Base.encode64("pubkey#{&1}")),
-      ws_base_url: "wss://localhost/sessions",
+      ws_url_fmt: "https://tmate.io/ws/session/%s",
+      ssh_cmd_fmt: "ssh %s@tmate.io",
       stoken: sequence(:token, &"STOKEN___________________RW#{&1}"),
       stoken_ro: sequence(:token, &"STOKEN___________________RO#{&1}")}
   end

@@ -21,7 +21,8 @@ defmodule SessionCaseTest do
     assert session.host_last_ip == session_event.ip_address
     assert session.stoken       == session_event.stoken
     assert session.stoken_ro    == session_event.stoken_ro
-    assert session.ws_base_url  == session_event.ws_base_url
+    assert session.ws_url_fmt   == session_event.ws_url_fmt
+    assert session.ssh_cmd_fmt  == session_event.ssh_cmd_fmt
     assert session.host_identity.type == "ssh"
     assert session.host_identity.metadata["pubkey"] == session_event.pubkey
   end
