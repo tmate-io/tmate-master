@@ -34,7 +34,8 @@ defmodule Tmate.Event.Projection do
 
   def handle_event(:session_close, id, timestamp, _params) do
     Repo.transaction fn ->
-      from(c in Client, where: c.session_id == ^id) |> Repo.delete_all
+      from(c in Client, where: c.session_id == ^id and is_nil(c.left_at))
+      |> Repo.update_all(set: [left_at: timestamp])
       Session.changeset(%Session{id: id}, %{closed_at: timestamp}) |> Repo.update
     end
     Logger.info("Closed session id=#{id}")
@@ -55,15 +56,27 @@ defmodule Tmate.Event.Projection do
     Logger.info("Client joined session sid=#{sid}, cid=#{cid}")
   end
 
-  def handle_event(:session_left, sid, _timestamp, %{id: cid}) do
+  def handle_event(:session_left, sid, timestamp, %{id: cid}) do
     from(c in Client, where: c.session_id == ^sid and c.client_id == ^cid)
-    |> Repo.delete_all
+    |> Repo.update_all(set: [left_at: timestamp])
+
     Logger.info("Client left session sid=#{sid}, cid=#{cid}")
   end
 
   def handle_event(:associate_ssh_identity, web_identity, _timestamp, %{pubkey: pubkey}) do
     # TODO
     # Logger.info("Associated identities")
+  end
+
+  def handle_event(:session_stats, sid, _timestamp, %{id: cid, latency: latency_stats}) do
+    case cid do
+      -1 ->
+        from(s in Session, where: s.id == ^sid)
+        |> Repo.update_all(set: [host_latency_stats: latency_stats])
+      _ ->
+        from(c in Client, where: c.session_id == ^sid and c.client_id == ^cid)
+        |> Repo.update_all(set: [latency_stats: latency_stats])
+    end
   end
 
   def handle_event(event_type, _, _, _) do

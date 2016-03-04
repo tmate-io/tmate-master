@@ -6,6 +6,7 @@ defmodule Tmate.Session do
   schema "sessions" do
     belongs_to :host_identity, Tmate.Identity
     field      :host_last_ip,  :string
+    field      :host_latency_stats, :map
     field      :ws_url_fmt,    :string
     field      :ssh_cmd_fmt,   :string
     field      :stoken,        :string

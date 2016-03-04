@@ -54,9 +54,9 @@ defmodule SessionCaseTest do
     session_event = emit_event(build(:event_session_register))
     _client_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
 
-    assert Repo.one(from Client, select: count("*")) == 1
+    assert Repo.one(from c in Client, where: is_nil(c.left_at), select: count("*")) == 1
     _close_event = emit_event(build(:event_session_close, entity_id: session_event.entity_id))
-    assert Repo.one(from Client, select: count("*")) == 0
+    assert Repo.one(from c in Client, where: is_nil(c.left_at), select: count("*")) == 0
   end
 
   test "client join" do
@@ -93,14 +93,16 @@ defmodule SessionCaseTest do
     _client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
     client2_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
 
+    client_query = from c in Client, where: is_nil(c.left_at)
+
     session = Repo.get(Session, session_event.entity_id)
-    session = Repo.preload(session, :clients)
+    session = Repo.preload(session, clients: client_query)
     assert session.clients |> Enum.count == 2
 
     _close_event = emit_event(build(:event_session_left, entity_id: session_event.entity_id, id: client2_event.id))
 
     session = Repo.get(Session, session_event.entity_id)
-    session = Repo.preload(session, :clients)
+    session = Repo.preload(session, clients: client_query)
     assert session.clients |> Enum.count == 1
   end
 
