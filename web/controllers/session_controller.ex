@@ -17,12 +17,12 @@ defmodule Tmate.SessionController do
 
     if session do
       conn
-      |> json session
+      |> json(session)
     else
       :timer.sleep(:crypto.rand_uniform(50, 200))
       conn
       |> put_status(404)
-      |> json %{error: "not found"}
+      |> json(%{error: "not found"})
     end
   end
 end

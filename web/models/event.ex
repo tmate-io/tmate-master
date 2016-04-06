@@ -1,5 +1,5 @@
 defmodule Tmate.Event do
-  use Ecto.Model
+  use Tmate.Web, :model
 
   schema "events" do
     field :type,      :string
@@ -24,6 +24,6 @@ defmodule Tmate.Event do
     [__MODULE__.Store,
      __MODULE__.Projection,
      __MODULE__.Broadcast]
-    |> Enum.each &apply(&1, :handle_event, args)
+    |> Enum.each(&apply(&1, :handle_event, args))
   end
 end

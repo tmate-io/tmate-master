@@ -18,8 +18,9 @@ defmodule Tmate.Web do
 
   def model do
     quote do
-      use Ecto.Model
-      
+      use Ecto.Schema
+      import Ecto.Changeset
+      import Ecto
     end
   end
 
@@ -28,7 +29,7 @@ defmodule Tmate.Web do
       use Phoenix.Controller
 
       alias Tmate.Repo
-      import Ecto.Model
+      import Ecto
       import Ecto.Query, only: [from: 1, from: 2]
 
       import Tmate.Router.Helpers
@@ -60,7 +61,7 @@ defmodule Tmate.Web do
       use Phoenix.Channel
 
       alias Tmate.Repo
-      import Ecto.Model
+      import Ecto
       import Ecto.Query, only: [from: 1, from: 2]
 
     end

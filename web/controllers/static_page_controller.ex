@@ -1,4 +1,4 @@
-defmodule Tmate.StaticController do
+defmodule Tmate.StaticPageController do
   use Tmate.Web, :controller
 
   def home(conn, _params) do

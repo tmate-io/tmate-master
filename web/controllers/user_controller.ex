@@ -12,7 +12,7 @@ defmodule Tmate.UserController do
         conn
         |> halt
         |> put_status(403)
-        |> json %{error: "Unauthorized"}
+        |> json(%{error: "Unauthorized"})
       identity ->
         conn
         |> assign(:identity, identity)
@@ -27,7 +27,7 @@ defmodule Tmate.UserController do
 
     port_opts = if ssh_opts[:port] == 22, do: "", else: " -p#{ssh_opts[:port]}"
     cmd = "ssh#{port_opts} #{ssh_opts[:host]} identify #{token}"
-    conn |> json %{cmd: cmd}
+    conn |> json(%{cmd: cmd})
   end
 
   defp generate_token do

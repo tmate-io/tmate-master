@@ -14,7 +14,7 @@
   </head>
 
   <body>
-    <div id="app-container"><%= @inner %></div>
+    <div id="app-container"><%= render @view_module, @view_template, assigns %></div>
     <%= if Application.get_env(:tmate, :rollbar)[:environment] == :prod do %>
       <script><%= {:safe, render("_rollbar.js")} %></script>
     <%= end %>

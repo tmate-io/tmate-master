@@ -1,5 +1,5 @@
 defmodule Tmate.Client do
-  use Ecto.Model
+  use Tmate.Web, :model
 
   @primary_key {:id, :binary_id, autogenerate: false}
 
