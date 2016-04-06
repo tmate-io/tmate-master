@@ -37,7 +37,7 @@ defmodule Tmate.EctoHelpers do
   end
 
   def get_or_create!(changeset) do
-    get_or_create(changeset, Keyword.keys(Ecto.Model.primary_key(changeset.data)))
+    get_or_create(changeset, Keyword.keys(Ecto.primary_key(changeset.data)))
   end
 
   def last(model) do

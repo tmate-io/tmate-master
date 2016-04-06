@@ -1,4 +1,4 @@
-defmodule Tmate.ModelCase do
+defmodule Tmate.EventCase do
   @moduledoc """
   This module defines the test case to be used by
   model tests.
@@ -19,17 +19,9 @@ defmodule Tmate.ModelCase do
       alias Tmate.Repo
       import Ecto.Model, except: [build: 2]
       import Ecto.Query, only: [from: 2]
-      import Tmate.ModelCase
+      import Tmate.EventCase
       import Tmate.Factory
     end
-  end
-
-  setup tags do
-    unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(Tmate.Repo, [])
-    end
-
-    :ok
   end
 
   @doc """
@@ -59,19 +51,21 @@ defmodule Tmate.ModelCase do
   end
 
   setup do
-    {:ok, pid} = Tmate.Proxy.Endpoint.start_link(name: Tmate.Proxy.Endpoint)
-    :ok
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Tmate.Repo)
+    {:ok, pid} = Tmate.Proxy.Endpoint.start_link
+    :ok = Ecto.Adapters.SQL.Sandbox.allow(Tmate.Repo, self(), pid)
+    {:ok, %{proxy_endpoint: pid}}
   end
 
-  def emit_event(event) do
+  def emit_event(context, event) do
     {m, params} = Map.split(event, [:event_type, :entity_id])
-    emit_raw_event(m[:event_type], m[:entity_id], params)
+    emit_raw_event(context, m[:event_type], m[:entity_id], params)
     event
   end
 
-  def emit_raw_event(event_type, entity_id, params) do
+  def emit_raw_event(%{proxy_endpoint: pid}, event_type, entity_id, params) do
     timestamp = current_timestamp()
-    {:reply, :ok} = Tmate.Proxy.Endpoint.call(Tmate.Proxy.Endpoint,
+    {:reply, :ok} = Tmate.Proxy.Endpoint.call(pid,
                      {:event, timestamp, event_type, entity_id, params})
   end
 

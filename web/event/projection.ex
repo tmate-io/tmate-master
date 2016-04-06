@@ -88,6 +88,6 @@ defmodule Tmate.Event.Projection do
   end
 
   def handle_event(event_type, _, _, _) do
-    Logger.debug("No projection for event #{event_type}")
+    Logger.warn("No projection for event #{event_type}")
   end
 end

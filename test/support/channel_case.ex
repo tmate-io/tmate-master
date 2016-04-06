@@ -19,22 +19,8 @@ defmodule Tmate.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
-
-      alias Tmate.Repo
-      import Ecto.Model
-      import Ecto.Query, only: [from: 2]
-
-
       # The default endpoint for testing
       @endpoint Tmate.Endpoint
     end
-  end
-
-  setup tags do
-    unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(Tmate.Repo, [])
-    end
-
-    :ok
   end
 end

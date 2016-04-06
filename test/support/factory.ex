@@ -19,7 +19,7 @@ defmodule Tmate.Factory do
 
   def factory(:event_session_join) do
     %{event_type: :session_join,
-      id: sequence(:client_id, & &1),
+      id: UUID.uuid1,
       ip_address: sequence(:ip, &"1.1.2.#{&1}"),
       type: "ssh",
       identity: sequence(:pubkey, & Base.encode64("pubkey#{&1}")),
