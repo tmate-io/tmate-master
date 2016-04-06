@@ -13,16 +13,16 @@ defmodule Tmate.Event do
     |> change(params)
   end
 
-  def emit(event_type, entity_id, params) do
+  def emit!(event_type, entity_id, params) do
     now = Ecto.DateTime.utc
-    emit(event_type, entity_id, now, params)
+    emit!(event_type, entity_id, now, params)
   end
 
-  def emit(event_type, entity_id, ecto_timestamp, params) do
+  def emit!(event_type, entity_id, ecto_timestamp, params) do
     # TODO GenEvent?
     args = [event_type, entity_id, ecto_timestamp, params]
-    [__MODULE__.Store,
-     __MODULE__.Projection,
+    [__MODULE__.Projection,
+     __MODULE__.Store,
      __MODULE__.Broadcast]
     |> Enum.each(&apply(&1, :handle_event, args))
   end

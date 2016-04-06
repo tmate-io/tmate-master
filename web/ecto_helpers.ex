@@ -2,11 +2,11 @@ defmodule Tmate.EctoHelpers do
   alias Tmate.Repo
   import Ecto.Query
 
-  def get_or_create(changeset, key, retry) when is_atom(key) do
-    get_or_create(changeset, [key], retry)
+  def get_or_insert(changeset, key, retry) when is_atom(key) do
+    get_or_insert(changeset, [key], retry)
   end
 
-  def get_or_create(changeset, query_keys, retry) do
+  def get_or_insert(changeset, query_keys, retry) do
     params = Enum.map(query_keys, fn key ->
       {_, value} = Ecto.Changeset.fetch_field(changeset, key)
       {key, value}
@@ -15,29 +15,36 @@ defmodule Tmate.EctoHelpers do
     case Repo.get_by(changeset.data.__struct__, params) do
       nil ->
         case {Repo.insert(changeset), retry} do
-          {{:ok, instance}, _} -> {:ok, instance}
+          {{:ok, instance}, _} ->
+            {:ok, :insert, instance}
           {{:error, %{constraints: [%{field: _, type: :unique}]}}, true} ->
-            get_or_create(changeset, query_keys, false)
-          {{:error, changeset}, _} -> {:error, changeset}
+            # TODO write test case
+            get_or_insert(changeset, query_keys, false)
+          {{:error, changeset}, _} ->
+            {:error, changeset}
         end
-      instance -> {:ok, instance}
+      instance -> {:ok, :get, instance}
     end
   end
 
-  def get_or_create(changeset, query_keys) do
-    get_or_create(changeset, query_keys, true)
+  def get_or_insert(changeset, query_keys) do
+    get_or_insert(changeset, query_keys, true)
   end
 
-  def get_or_create!(changeset, query_keys) do
-    case get_or_create(changeset, query_keys) do
-      {:ok, instance} -> instance
+  def get_or_insert(changeset) do
+    get_or_insert(changeset, Keyword.keys(Ecto.primary_key(changeset.data)))
+  end
+
+  def get_or_insert!(changeset, query_keys) do
+    case get_or_insert(changeset, query_keys) do
+      {:ok, _, instance} -> instance
       {:error, changeset} ->
         raise Ecto.InvalidChangesetError, action: :insert, changeset: changeset
     end
   end
 
-  def get_or_create!(changeset) do
-    get_or_create(changeset, Keyword.keys(Ecto.primary_key(changeset.data)))
+  def get_or_insert!(changeset) do
+    get_or_insert!(changeset, Keyword.keys(Ecto.primary_key(changeset.data)))
   end
 
   def last(model) do

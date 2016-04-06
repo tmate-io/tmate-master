@@ -1,5 +1,5 @@
 defmodule IdentityTest do
-  use Tmate.EventCase, async: true
+  use Tmate.EventCase
 
   alias Tmate.Session
   alias Tmate.Identity

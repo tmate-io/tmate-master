@@ -27,7 +27,7 @@ defmodule Tmate.Proxy.Endpoint do
 
   def handle_call({:event, timestamp, event_type, entity_id, params}, state) do
     {:ok, ecto_timestamp} = Ecto.DateTime.cast(timestamp)
-    Tmate.Event.emit(event_type, entity_id, ecto_timestamp, params)
+    Tmate.Event.emit!(event_type, entity_id, ecto_timestamp, params)
     {:reply, :ok, state}
   end
 

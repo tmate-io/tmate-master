@@ -4,16 +4,20 @@ defmodule Tmate.User do
   @primary_key {:id, :binary_id, autogenerate: false}
 
   schema "users" do
-    field :email,               :string
-    field :name,                :string
-    field :username,            :string
-    field :github_login,        :string
-    field :github_access_token, :string
+    field :username,  :string
+    field :email,     :string
+    field :github_id, :integer
   end
 
-  def changeset(model, params \\ %{}) do
+  def changeset(model, params \\ :empty) do
     model
-    |> change(params)
+    |> cast(params, ~w(username email), ~w(github_id))
+    |> validate_length(:username, min: 1, max: 40)
+    |> validate_format(:email, ~r/@/)
+    |> unique_constraint(:id, name: :users_pkey)
+    |> unique_constraint(:username)
+    |> unique_constraint(:email)
+    |> unique_constraint(:github_id)
   end
 end
 

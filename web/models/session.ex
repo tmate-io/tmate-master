@@ -20,5 +20,6 @@ defmodule Tmate.Session do
   def changeset(model, params \\ %{}) do
     model
     |> change(params)
+    |> unique_constraint(:id, name: :sessions_pkey)
   end
 end

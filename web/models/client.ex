@@ -16,5 +16,6 @@ defmodule Tmate.Client do
   def changeset(model, params \\ %{}) do
     model
     |> change(params)
+    |> unique_constraint(:id, name: :clients_pkey)
   end
 end

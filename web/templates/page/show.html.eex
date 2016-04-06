@@ -1,3 +1,5 @@
+<script>var global_vars = <%= global_vars(assigns) %>;</script>
+
 <p class="loading">
-  Loading tmate...
+  Loading...
 </p>
