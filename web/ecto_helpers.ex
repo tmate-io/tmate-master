@@ -12,7 +12,7 @@ defmodule Tmate.EctoHelpers do
       {key, value}
     end) |> Enum.into(%{})
 
-    case Repo.get_by(changeset.model.__struct__, params) do
+    case Repo.get_by(changeset.data.__struct__, params) do
       nil ->
         case {Repo.insert(changeset), retry} do
           {{:ok, instance}, _} -> {:ok, instance}
@@ -37,7 +37,7 @@ defmodule Tmate.EctoHelpers do
   end
 
   def get_or_create!(changeset) do
-    get_or_create(changeset, Keyword.keys(Ecto.Model.primary_key(changeset.model)))
+    get_or_create(changeset, Keyword.keys(Ecto.Model.primary_key(changeset.data)))
   end
 
   def last(model) do
