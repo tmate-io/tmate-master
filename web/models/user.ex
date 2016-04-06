@@ -6,7 +6,7 @@ defmodule Tmate.User do
   schema "users" do
     field :email,               :string
     field :name,                :string
-    field :nickname,            :string
+    field :username,            :string
     field :github_login,        :string
     field :github_access_token, :string
   end
