@@ -47,7 +47,7 @@ defmodule Tmate.SigninController do
   def signup(%{method: "GET"} = conn, _params) do
     %{username: username, verified_emails: emails} = get_signup_info(conn)
     signup_info = %{username: username, email: Enum.at(emails, 0)}
-    signup_info = signup_info |> Enum.filter(fn {k,v} -> v end) |> Enum.into(%{})
+    signup_info = signup_info |> Enum.filter(fn {_,v} -> v end) |> Enum.into(%{})
 
     conn
     |> render(Tmate.PageView, "show.html", global_vars: %{signup: signup_info})
