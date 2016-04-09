@@ -13,11 +13,12 @@ defmodule Tmate.User do
     model
     |> cast(params, ~w(username email), ~w(github_id))
     |> validate_length(:username, min: 1, max: 40)
-    |> validate_format(:email, ~r/@/)
+    |> validate_format(:username, ~r/^((?![A-Z]).)*$/, message: "may only be lowercase")
+    |> validate_format(:username, ~r/^[a-z0-9_]*$/, message: "may only contain lowercase alphanumeric characters and '_'")
+    |> validate_format(:email, ~r/.@.*\.../)
     |> unique_constraint(:id, name: :users_pkey)
     |> unique_constraint(:username)
     |> unique_constraint(:email)
     |> unique_constraint(:github_id)
   end
 end
-

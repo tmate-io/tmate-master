@@ -6,12 +6,12 @@ defmodule Tmate.SigninController do
   alias Tmate.User
 
   def init_github_auth(conn, _params) do
-    url = __MODULE__.GitHub.authorize_url!(scope: "user:email")
+    url = __MODULE__.OAuthGitHub.authorize_url!(scope: "user:email")
     conn |> redirect(external: url)
   end
 
   def github_callback(conn, %{"code" => code}) do
-    token = __MODULE__.GitHub.get_token!(code: code)
+    token = __MODULE__.OAuthGitHub.get_token!(code: code)
     %{access_token: access_token} = token
     if access_token == nil, do: raise "Invalid OAuth code"
 
@@ -37,7 +37,7 @@ defmodule Tmate.SigninController do
   defp continue_github_signup(conn, github_id, username, verified_emails) do
     conn
     |> put_session(:signup, %{username: username, verified_emails: verified_emails, github_id: github_id})
-    |> redirect(to: "/signin/signup")
+    |> redirect(to: "/signup")
   end
 
   defp get_signup_info(conn) do
@@ -46,13 +46,15 @@ defmodule Tmate.SigninController do
 
   def signup(%{method: "GET"} = conn, _params) do
     %{username: username, verified_emails: emails} = get_signup_info(conn)
+    signup_info = %{username: username, email: Enum.at(emails, 0)}
+    signup_info = signup_info |> Enum.filter(fn {k,v} -> v end) |> Enum.into(%{})
+
     conn
-    |> render(Tmate.PageView, "show.html", global_vars: %{signup: %{username: username, email: Enum.at(emails, 0)}})
+    |> render(Tmate.PageView, "show.html", global_vars: %{signup: signup_info})
   end
 
   def signup(%{method: "POST"} = conn, %{"username" => username, "email" => email}) do
     %{github_id: github_id, verified_emails: verified_emails} = get_signup_info(conn)
-    conn = delete_session(conn, :signup)
 
     if Enum.find(verified_emails, & &1 == email) do
       finalize_signup(conn, %{username: username, email: email, github_id: github_id})
@@ -62,24 +64,39 @@ defmodule Tmate.SigninController do
     end
   end
 
+  def validate(conn, params) do
+    changeset = User.changeset(%User{id: UUID.uuid1}, params)
+    case Tmate.EctoHelpers.validate_changeset(changeset) do
+      {:error, changeset} ->
+        conn
+        |> put_status(400)
+        |> render(Tmate.ChangesetView, "error.json", changeset: changeset)
+      :ok ->
+        conn
+        |> json(%{})
+    end
+  end
+
   defp finalize_signup(conn, user_params) do
     user_id = UUID.uuid1()
     changeset = User.changeset(%User{id: user_id}, user_params)
 
-    if changeset.valid? do
-      # if we have a uniqueness constraint failure at this point, we get a 500 for now.
-      Tmate.Event.emit!(:user_create, user_id, user_params)
-      conn
-      |> put_session(:user_id, user_id)
-      |> json(%{user: %{username: user_params.username}})
-    else
-      conn
-      |> put_status(400)
-      |> render(Tmate.ChangesetView, "error.json", changeset: changeset)
+    case Tmate.EctoHelpers.validate_changeset(changeset) do
+      {:error, changeset} ->
+        Logger.warn(changeset |> inspect)
+        conn
+        |> put_status(400)
+        |> render(Tmate.ChangesetView, "error.json", changeset: changeset)
+      :ok ->
+        Tmate.Event.emit!(:user_create, user_id, changeset.changes)
+        conn
+        |> delete_session(:signup)
+        |> put_session(:user_id, user_id)
+        |> json(%{user: %{username: changeset.changes.username}})
     end
   end
 
-  defmodule GitHub do
+  defmodule OAuthGitHub do
     use OAuth2.Strategy
 
     def client do

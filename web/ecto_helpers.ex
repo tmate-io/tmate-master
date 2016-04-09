@@ -50,4 +50,16 @@ defmodule Tmate.EctoHelpers do
   def last(model) do
     Repo.one(from s in model, order_by: [desc: :id], limit: 1)
   end
+
+  def validate_changeset(changeset) do
+    # TODO ecto won't do uniqueness validations unless all the other validations
+    # went through. This is a litte sad.
+    case Repo.transaction(fn ->
+      result = changeset |> Repo.insert
+      Repo.rollback({:insert_result, result})
+    end) do
+      {:error, {:insert_result, {:ok, _}}} -> :ok
+      {:error, {:insert_result, {:error, changeset}}} -> {:error, changeset}
+    end
+  end
 end

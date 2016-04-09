@@ -27,8 +27,8 @@ defmodule Tmate.Router do
       post "/request_identification", UserController, :request_identification
     end
 
-    post "/signup",               SigninController, :signup
-    post "/signup/validate_user", SigninController, :validate_user
+    post "/signup",          SigninController, :signup
+    post "/signup/validate", SigninController, :validate
   end
 
   scope "/", Tmate do
