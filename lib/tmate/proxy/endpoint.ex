@@ -36,7 +36,7 @@ defmodule Tmate.Proxy.Endpoint do
     stdout = case Tmate.Redis.command(["GET", token_key]) do
       {:ok, nil} -> "Invalid identification :(\nYou may try again"
       {:ok, identity} ->
-        Tmate.Event.emit(:associate_ssh_identity, identity,
+        Tmate.Event.emit!(:associate_ssh_identity, identity,
                          %{username: username, ip_address: ip_address, pubkey: pubkey})
         Tmate.Redis.command(["DEL", token_key]) # Ok if fails. TTL will kill it.
         greeting

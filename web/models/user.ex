@@ -9,7 +9,7 @@ defmodule Tmate.User do
     field :github_id, :integer
   end
 
-  def changeset(model, params \\ :empty) do
+  def changeset(model, params) do
     model
     |> cast(params, ~w(username email), ~w(github_id))
     |> validate_length(:username, min: 1, max: 40)
