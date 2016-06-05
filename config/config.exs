@@ -13,6 +13,7 @@ config :tmate, Tmate.Endpoint,
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: Tmate.PubSub,
            adapter: Phoenix.PubSub.PG2]
+config :tmate, ecto_repos: [Tmate.Repo]
 
 config :logger,
   backends: [:console, Rollbax.Notifier]

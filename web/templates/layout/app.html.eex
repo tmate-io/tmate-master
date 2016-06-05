@@ -16,7 +16,7 @@
   <body>
     <div id="app-container"><%= render @view_module, @view_template, assigns %></div>
     <%= if Application.get_env(:tmate, :rollbar)[:environment] == :prod do %>
-      <script><%= {:safe, render("_rollbar.js")} %></script>
+      <script><%= raw(render("_rollbar.js")) %></script>
     <%= end %>
     <script src="<%= static_url(@conn, "/js/index.js") %>"></script>
   </body>

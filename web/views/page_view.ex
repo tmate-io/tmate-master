@@ -2,10 +2,10 @@ defmodule Tmate.PageView do
   use Tmate.Web, :view
 
   def global_vars(%{global_vars: global_vars}) do
-    {:safe, Poison.encode!(global_vars) }
+    raw(Poison.encode!(global_vars))
   end
 
   def global_vars(_assigns) do
-    {:safe, "{}" }
+    raw("{}")
   end
 end
