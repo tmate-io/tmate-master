@@ -16,10 +16,7 @@ config :tmate, Tmate.Endpoint,
 config :tmate, ecto_repos: [Tmate.Repo]
 
 config :logger,
-  backends: [:console, Rollbax.Notifier]
-
-config :logger, Rollbax.Notifier,
-  level: :error
+  backends: [:console]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -34,14 +31,5 @@ config :phoenix, :generators,
 config :tmate, :redis,
   pool_size: 2,
   pool_max_overflow: 2
-
-config :tmate, :rollbar,
-  token: "ac9fa1686f8549d89fc092ad081f3128",
-  environment: Mix.env,
-  code_version: :os.cmd('git rev-parse --verify HEAD') |> to_string |> String.strip
-
-config :rollbax,
-  access_token: "cbf96daf284c4c85b608e86aa3def4c0",
-  environment: Mix.env
 
 import_config "#{Mix.env}.exs"

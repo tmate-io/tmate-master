@@ -9,7 +9,7 @@ defmodule Tmate.Mixfile do
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -18,8 +18,8 @@ defmodule Tmate.Mixfile do
   def application do
     [mod: {Tmate, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex, :oauth2, :rollbax,
-                    :uuid, :redix, :edeliver]]
+                    :phoenix_ecto, :postgrex, :oauth2,
+                    :uuid, :redix]]
   end
 
   # Specifies which paths to compile per environment
@@ -30,21 +30,21 @@ defmodule Tmate.Mixfile do
   #
   # Type `mix help deps` for examples and options
   defp deps do
-    [{:phoenix, "~> 1.1"},
-     {:phoenix_ecto, "~> 3.0.0-beta"},
-     {:ecto, "~> 2.0.0-beta"},
-     {:postgrex, ">= 0.0.0"},
-     {:phoenix_html, "~> 2.3"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:poolboy, "~> 1.0"},
-     {:oauth2, ">= 0.0.0"},
-     {:uuid, "~> 1.1" },
-     {:redix, ">= 0.0.0"},
-     {:rollbax, ">= 0.0.0"},
-     {:exrm, ">= 0.0.0"},
-     {:edeliver, ">= 0.0.0"},
-     {:poison, ">= 0.0.0"},
-     {:ex_machina, ">= 0.0.0", only: :test},
-     {:cowboy, "~> 1.0"}]
+    [
+      {:phoenix, "~> 1.1"},
+      {:phoenix_ecto, "~> 3.0.0-beta"},
+      {:ecto, "~> 2.0.0-beta"},
+      {:postgrex, ">= 0.0.0"},
+      {:phoenix_html, "~> 2.3"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:poolboy, "~> 1.0"},
+      {:oauth2, ">= 0.0.0"},
+      {:uuid, "~> 1.1" },
+      {:redix, ">= 0.0.0"},
+      {:poison, ">= 0.0.0"},
+      {:ex_machina, ">= 0.0.0", only: :test},
+      {:cowboy, "~> 1.0"},
+      {:distillery, "~> 2.0"},
+    ]
   end
 end

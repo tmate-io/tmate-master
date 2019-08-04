@@ -48,5 +48,3 @@ config :tmate, :github_oauth,
 
 config :tmate, :redis,
   url: "redis://localhost:6379/0"
-
-config :rollbax, enabled: false
