@@ -1,6 +1,6 @@
 defmodule Tmate.Identity do
   use Tmate.Web, :model
-  import Ecto.Query, only: [from: 1, from: 2]
+  import Ecto.Query, only: [from: 2]
 
   schema "identities" do
     field :type,     :string

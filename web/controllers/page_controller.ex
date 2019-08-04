@@ -6,12 +6,14 @@ defmodule Tmate.PageController do
     render(conn, "show.html")
   end
 
-  defp set_identity(conn) do
-    identity = get_session(conn, :identity)
-    if identity == nil do
-      identity = UUID.uuid1()
-      conn = put_session(conn, :identity, identity)
-    end
-    conn
-  end
+  #defp set_identity(conn) do
+  #  identity = get_session(conn, :identity)
+  #  conn = if identity == nil do
+  #    identity = UUID.uuid1()
+  #    put_session(conn, :identity, identity)
+  #  else
+  #    conn
+  #  end
+  #  conn
+  #end
 end

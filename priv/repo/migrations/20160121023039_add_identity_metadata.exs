@@ -10,12 +10,12 @@ defmodule Tmate.Repo.Migrations.AddMetadataIdentity do
       add :metadata, :map
     end
 
-    flush
+    flush()
 
     Repo.all(Identity |> Identity.type("ssh"))
-    |> Enum.each fn identity ->
-      identity |> migrate_ssh_key |> Repo.update!
-    end
+    |> Enum.each(fn identity ->
+        identity |> migrate_ssh_key() |> Repo.update!()
+    end)
 
     alter table(:identities) do
       modify :key, :string, size: 64, null: false
@@ -25,7 +25,7 @@ defmodule Tmate.Repo.Migrations.AddMetadataIdentity do
   defp migrate_ssh_key(identity) do
     params = case {identity.type, identity.key} do
       {"ssh", "SHA256:" <> _} -> %{}
-      {"ssh", key} -> %{key: Identity.key_hash(identity.key), metadata: %{pubkey: identity.key}}
+      {"ssh", _key} -> %{key: Identity.key_hash(identity.key), metadata: %{pubkey: identity.key}}
       _ -> %{}
     end
     Identity.changeset(identity, params)

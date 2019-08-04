@@ -20,7 +20,7 @@ defmodule Tmate.UserController do
   end
 
   def request_identification(conn, _params) do
-    token = generate_token
+    token = generate_token()
     Tmate.Redis.command(["SET", "identify_token:#{token}", conn.assigns[:identity], "EX", @token_ttl])
 
     {:ok, ssh_opts} = Application.fetch_env(:tmate, :ssh)

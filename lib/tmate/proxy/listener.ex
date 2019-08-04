@@ -8,8 +8,8 @@ defmodule Tmate.Proxy.Listener do
   end
 
   def init(:ok) do
-    :ok = :pg2.create(pg2_namespace)
-    :ok = :pg2.join(pg2_namespace, self)
+    :ok = :pg2.create(pg2_namespace())
+    :ok = :pg2.join(pg2_namespace(), self())
     {:ok, []}
   end
 
@@ -24,12 +24,12 @@ defmodule Tmate.Proxy.Listener do
       # Figure out a way to do it better without serializing requests.
       result = try do
         Tmate.Proxy.Endpoint.call(worker, args)
-      catch
-        :exit, _ ->
-          {:reply, {:error, :internal_error}}
       rescue
         err ->
           Logger.warn(inspect(err))
+          {:reply, {:error, :internal_error}}
+      catch
+        :exit, _ ->
           {:reply, {:error, :internal_error}}
       after
         :poolboy.checkin(:proxy_endpoint_pool, worker)

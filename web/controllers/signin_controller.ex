@@ -19,7 +19,7 @@ defmodule Tmate.SigninController do
 
     {:ok, %{body: %{"id" => github_id, "login" => github_username}}} = OAuth2.AccessToken.get(token, "/user")
     {:ok, %{body: github_emails}} = OAuth2.AccessToken.get(token, "/user/emails")
-    verified_emails = github_emails |> Enum.filter(& &1["verified"]) |> Enum.map(& Dict.get(&1, "email"))
+    verified_emails = github_emails |> Enum.filter(& &1["verified"]) |> Enum.map(& Map.get(&1, "email"))
 
     find_user_by_github_id(conn, github_id) ||
     continue_github_signup(conn, github_id, github_username, verified_emails)
@@ -113,12 +113,12 @@ defmodule Tmate.SigninController do
     end
 
     def authorize_url!(params \\ []) do
-      OAuth2.Client.authorize_url!(client, params)
+      OAuth2.Client.authorize_url!(client(), params)
     end
 
     # you can pass options to the underlying http library via `options` parameter
     def get_token!(params \\ [], headers \\ [], options \\ []) do
-      OAuth2.Client.get_token!(client, params, headers, options)
+      OAuth2.Client.get_token!(client(), params, headers, options)
     end
 
     # Strategy Callbacks

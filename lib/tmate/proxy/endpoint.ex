@@ -14,15 +14,7 @@ defmodule Tmate.Proxy.Endpoint do
   end
 
   def handle_call(args, _from, state) do
-    try do
-      handle_call(args, state)
-    rescue
-      exception ->
-        stacktrace = System.stacktrace()
-        # inspect() because Poison doesn't like tuples
-        Rollbax.report(exception, stacktrace, %{args: inspect(args)})
-        reraise(exception, stacktrace)
-    end
+    handle_call(args, state)
   end
 
   def handle_call({:event, timestamp, event_type, entity_id, params}, state) do
@@ -39,7 +31,7 @@ defmodule Tmate.Proxy.Endpoint do
         Tmate.Event.emit!(:associate_ssh_identity, identity,
                          %{username: username, ip_address: ip_address, pubkey: pubkey})
         Tmate.Redis.command(["DEL", token_key]) # Ok if fails. TTL will kill it.
-        greeting
+        greeting()
     end
     {:reply, {:ok, stdout}, state}
   end

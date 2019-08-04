@@ -1,8 +1,6 @@
 defmodule Tmate.Router do
   use Tmate.Web, :router
 
-  use Rollbax.Plug
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session

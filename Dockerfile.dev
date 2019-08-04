@@ -14,9 +14,16 @@ ENV MIX_ENV ${MIX_ENV}
 RUN mix deps.get
 RUN mix deps.compile
 
-COPY lib lib
 COPY config config
+COPY lib lib
+COPY priv priv
+COPY web web
 
 RUN mix compile
 
-CMD mkfifo console && cat console | iex -S mix
+CMD mkfifo console && cat console | \
+  iex --name master@erlmaster.default.svc.cluster.local \
+      --cookie cookie \
+      --erl '-kernel inet_dist_listen_min 30000' \
+      --erl '-kernel inet_dist_listen_max 30000' \
+      -S mix

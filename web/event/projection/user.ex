@@ -2,9 +2,6 @@ defmodule Tmate.Event.Projection.User do
   require Logger
 
   alias Tmate.User
-  alias Tmate.Repo
-
-  import Ecto.Query
 
   defmacro handled_events do
     [:user_create, :user_associate_ssh_identity]
@@ -15,7 +12,7 @@ defmodule Tmate.Event.Projection.User do
     Logger.info("New user id=#{uid}, username=#{user_params.username}")
   end
 
-  def handle_event(:user_associate_ssh_identity, web_identity, _timestamp, %{pubkey: pubkey}) do
+  def handle_event(:user_associate_ssh_identity, _web_identity, _timestamp, %{pubkey: _pubkey}) do
     # TODO
     # Logger.info("Associated identities")
   end
