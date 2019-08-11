@@ -1,7 +1,7 @@
 FROM elixir:1.8-alpine
 
 RUN mix local.hex --force && mix local.rebar --force
-RUN apk --no-cache add git
+RUN apk --no-cache add git inotify-tools
 
 WORKDIR /src/tmate-master
 
@@ -26,4 +26,4 @@ CMD mkfifo console && cat console | \
       --cookie cookie \
       --erl '-kernel inet_dist_listen_min 20000' \
       --erl '-kernel inet_dist_listen_max 20000' \
-      -S mix
+      -S mix phx.server

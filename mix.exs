@@ -42,7 +42,8 @@ defmodule Tmate.Mixfile do
       {:redix, ">= 0.0.0"},
       {:jason, ">= 0.0.0"},
       {:ex_machina, ">= 0.0.0", only: :test},
-      {:cowboy, "~> 1.0"},
+      {:cowboy, "~> 2.0"},
+      {:plug_cowboy, ">= 0.0.0"},
       {:distillery, "~> 2.0"},
     ]
   end
