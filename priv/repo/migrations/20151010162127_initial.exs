@@ -5,7 +5,7 @@ defmodule Tmate.Repo.Migrations.Initial do
     create table(:events) do
       add :type,      :string,   null: false
       add :entity_id, :uuid
-      add :timestamp, :datetime, null: false
+      add :timestamp, :utc_datetime, null: false
       add :params,    :map,      null: false
     end
     create index(:events, [:type])
@@ -24,8 +24,8 @@ defmodule Tmate.Repo.Migrations.Initial do
       add :ws_base_url,      :string,  null: false
       add :stoken,           :string,  size: 30, null: false
       add :stoken_ro,        :string,  size: 30, null: false
-      add :created_at,       :datetime, null: false
-      add :closed_at,        :datetime
+      add :created_at,       :utc_datetime, null: false
+      add :closed_at,        :utc_datetime
     end
     create index(:sessions, [:host_identity_id])
     create index(:sessions, [:stoken])
@@ -36,7 +36,7 @@ defmodule Tmate.Repo.Migrations.Initial do
       add :identity_id, references(:identities, type: :integer), null: false
       add :client_id,   :integer,  null: false
       add :ip_address,  :string,   null: false
-      add :joined_at,   :datetime, null: false
+      add :joined_at,   :utc_datetime, null: false
       add :readonly,    :boolean,  null: false
     end
     create index(:clients, [:session_id, :client_id], [unique: true])

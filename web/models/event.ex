@@ -4,7 +4,7 @@ defmodule Tmate.Event do
   schema "events" do
     field :type,      :string
     field :entity_id, Ecto.UUID
-    field :timestamp, Ecto.DateTime
+    field :timestamp, :utc_datetime
     field :params,    :map
   end
 
@@ -14,7 +14,7 @@ defmodule Tmate.Event do
   end
 
   def emit!(event_type, entity_id, params) do
-    now = Ecto.DateTime.utc
+    now = DateTime.utc_now
     emit!(event_type, entity_id, now, params)
   end
 

@@ -11,8 +11,8 @@ defmodule Tmate.Session do
     field      :ssh_cmd_fmt,   :string
     field      :stoken,        :string
     field      :stoken_ro,     :string
-    field      :created_at,    Ecto.DateTime
-    field      :closed_at,     Ecto.DateTime
+    field      :created_at,    :utc_datetime
+    field      :closed_at,     :utc_datetime
 
     has_many   :clients,       Tmate.Client
   end

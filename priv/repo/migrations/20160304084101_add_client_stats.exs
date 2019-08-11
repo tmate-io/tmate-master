@@ -3,7 +3,7 @@ defmodule Tmate.Repo.Migrations.AddClientStats do
 
   def change do
     alter table(:clients) do
-      add :left_at, :datetime
+      add :left_at, :utc_datetime
       add :latency_stats, :map
     end
 

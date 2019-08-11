@@ -28,6 +28,9 @@ config :phoenix, :generators,
   migration: true,
   binary_id: false
 
+config :phoenix, :json_library,
+  Jason
+
 config :tmate, :redis,
   pool_size: 2,
   pool_max_overflow: 2

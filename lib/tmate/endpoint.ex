@@ -1,7 +1,8 @@
 defmodule Tmate.Endpoint do
   use Phoenix.Endpoint, otp_app: :tmate
 
-  socket "/socket", Tmate.UserSocket
+  socket "/socket", Tmate.UserSocket,
+    websocket: []
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -25,7 +26,7 @@ defmodule Tmate.Endpoint do
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
-    json_decoder: Poison
+    json_decoder: Jason
 
   plug Plug.MethodOverride
   plug Plug.Head

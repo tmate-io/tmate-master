@@ -31,8 +31,8 @@ defmodule Tmate.Mixfile do
   defp deps do
     [
       {:phoenix, "~> 1.1"},
-      {:phoenix_ecto, "~> 3.0.0-beta"},
-      {:ecto, "~> 2.0.0-beta"},
+      {:phoenix_ecto, "~> 4.0"},
+      {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.3"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
@@ -40,7 +40,7 @@ defmodule Tmate.Mixfile do
       {:oauth2, ">= 0.0.0"},
       {:uuid, "~> 1.1" },
       {:redix, ">= 0.0.0"},
-      {:poison, ">= 0.0.0"},
+      {:jason, ">= 0.0.0"},
       {:ex_machina, ">= 0.0.0", only: :test},
       {:cowboy, "~> 1.0"},
       {:distillery, "~> 2.0"},
