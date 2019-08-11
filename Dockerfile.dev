@@ -24,6 +24,6 @@ RUN mix compile
 CMD mkfifo console && cat console | \
   iex --name master@erlmaster.default.svc.cluster.local \
       --cookie cookie \
-      --erl '-kernel inet_dist_listen_min 30000' \
-      --erl '-kernel inet_dist_listen_max 30000' \
+      --erl '-kernel inet_dist_listen_min 20000' \
+      --erl '-kernel inet_dist_listen_max 20000' \
       -S mix
