@@ -17,7 +17,6 @@ defmodule Tmate.EventCase do
   using do
     quote do
       alias Tmate.Repo
-      import Ecto.Model, except: [build: 2]
       import Ecto.Query, only: [from: 2]
       import Tmate.EventCase
       import Tmate.Factory
@@ -70,10 +69,6 @@ defmodule Tmate.EventCase do
   end
 
   defp current_timestamp() do
-    # from Ecto lib.
-    erl_timestamp = :os.timestamp
-    {_, _, usec} = erl_timestamp
-    {date, {h, m, s}} = :calendar.now_to_datetime(erl_timestamp)
-    {date, {h, m, s, usec}}
+    DateTime.truncate(DateTime.utc_now, :second)
   end
 end
