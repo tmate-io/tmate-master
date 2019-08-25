@@ -52,9 +52,9 @@ defmodule Tmate.EventCase do
 
   setup do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Tmate.Repo)
-    {:ok, pid} = Tmate.Proxy.Endpoint.start_link
+    {:ok, pid} = Tmate.Websocket.Endpoint.start_link
     :ok = Ecto.Adapters.SQL.Sandbox.allow(Tmate.Repo, self(), pid)
-    {:ok, %{proxy_endpoint: pid}}
+    {:ok, %{websocket_endpoint: pid}}
   end
 
   def emit_event(context, event) do
@@ -63,9 +63,9 @@ defmodule Tmate.EventCase do
     event
   end
 
-  def emit_raw_event(%{proxy_endpoint: pid}, event_type, entity_id, params) do
+  def emit_raw_event(%{websocket_endpoint: pid}, event_type, entity_id, params) do
     timestamp = current_timestamp()
-    {:reply, :ok} = Tmate.Proxy.Endpoint.call(pid,
+    {:reply, :ok} = Tmate.Websocket.Endpoint.call(pid,
                      {:event, timestamp, event_type, entity_id, params})
   end
 

@@ -1,4 +1,4 @@
-defmodule Tmate.Proxy.Endpoint do
+defmodule Tmate.Websocket.Endpoint do
   use GenServer
 
   def start_link(opts \\ []) do

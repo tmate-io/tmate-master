@@ -10,7 +10,7 @@ defmodule Tmate do
       # FIXME redis connection is not *necessary* to our application.
       # supervisor(Tmate.Redis, []),
       supervisor(Tmate.Endpoint, []),
-      supervisor(Tmate.Proxy.Supervisor, []),
+      supervisor(Tmate.Websocket.Supervisor, []),
       worker(Tmate.Repo, []),
     ]
 

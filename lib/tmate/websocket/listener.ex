@@ -1,4 +1,4 @@
-defmodule Tmate.Proxy.Listener do
+defmodule Tmate.Websocket.Listener do
   use GenServer
 
   require Logger
@@ -18,12 +18,12 @@ defmodule Tmate.Proxy.Listener do
   end
 
   def handle_info({:call, ref, from, args}, state) do
-    worker = :poolboy.checkout(:proxy_endpoint_pool)
+    worker = :poolboy.checkout(:websocket_endpoint_pool)
     _pid = spawn fn ->
       # TODO wrapping with an extra process kinda suck.
       # Figure out a way to do it better without serializing requests.
       result = try do
-        Tmate.Proxy.Endpoint.call(worker, args)
+        Tmate.Websocket.Endpoint.call(worker, args)
       rescue
         err ->
           Logger.warn(inspect(err))
@@ -32,7 +32,7 @@ defmodule Tmate.Proxy.Listener do
         :exit, _ ->
           {:reply, {:error, :internal_error}}
       after
-        :poolboy.checkin(:proxy_endpoint_pool, worker)
+        :poolboy.checkin(:websocket_endpoint_pool, worker)
       end
 
       case result do
