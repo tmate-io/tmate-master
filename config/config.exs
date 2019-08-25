@@ -8,8 +8,6 @@ use Mix.Config
 # Configures the endpoint
 config :tmate, Tmate.Endpoint,
   url: [host: "localhost"],
-  root: Path.dirname(__DIR__),
-  secret_key_base: "rzC2wqnmk0VeKRZHiMtPDAkd5QeWdPSSX2H9pknPBgb4rdOA7TEqMq9Umm5bjFPs",
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: Tmate.PubSub,
            adapter: Phoenix.PubSub.PG2]
@@ -28,8 +26,7 @@ config :phoenix, :generators,
   migration: true,
   binary_id: false
 
-config :phoenix, :json_library,
-  Jason
+config :phoenix, :json_library, Jason
 
 config :tmate, :redis,
   pool_size: 2,

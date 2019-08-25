@@ -3,8 +3,8 @@ defmodule Tmate.Mixfile do
 
   def project do
     [app: :tmate,
-     version: "0.0.24",
-     elixir: "~> 1.1",
+     version: "0.1.1",
+     elixir: "~> 1.9",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -16,9 +16,9 @@ defmodule Tmate.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [mod: {Tmate, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger,
+     applications: [:phoenix, :phoenix_html, :cowboy, :plug_cowboy, :logger,
                     :phoenix_ecto, :postgrex, :oauth2,
-                    :uuid, :redix]]
+                    :uuid, :redix, :poolboy, :jason, :ecto_sql]]
   end
 
   # Specifies which paths to compile per environment

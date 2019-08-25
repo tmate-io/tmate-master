@@ -7,11 +7,13 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :tmate, Tmate.Endpoint,
+  # root: Path.dirname(__DIR__),
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   cache_static_lookup: false,
   check_origin: false,
+  secret_key_base: "rzC2wqnmk0VeKRZHiMtPDAkd5QeWdPSSX2H9pknPBgb4rdOA7TEqMq9Umm5bjFPs",
   static_url: [host: "localhost", port: 4080],
   host_url: "http://localhost:4000"
 
