@@ -9,7 +9,9 @@ use Mix.Config
 # which you typically run after static files are built.
 
 config :tmate, Tmate.Endpoint,
-  http: [port: System.get_env("MASTER_HTTP_PORT", "4000") |> String.to_integer()],
+  http: [port: System.get_env("MASTER_HTTP_PORT", "4000") |> String.to_integer(),
+         compress: true, protocol_options: [
+           proxy_header: System.get_env("USE_PROXY_PROTOCOL") == "1"]],
   url: System.get_env("MASTER_BASE_URL", "") |> URI.parse() |> Map.to_list(),
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
   cache_static_manifest: "priv/static/cache_manifest.json"
