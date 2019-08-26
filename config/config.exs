@@ -8,6 +8,7 @@ use Mix.Config
 # Configures the endpoint
 config :tmate, Tmate.Endpoint,
   url: [host: "localhost"],
+  root: ".",
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: Tmate.PubSub,
            adapter: Phoenix.PubSub.PG2]
