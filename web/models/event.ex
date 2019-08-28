@@ -18,9 +18,9 @@ defmodule Tmate.Event do
     emit!(event_type, entity_id, now, params)
   end
 
-  def emit!(event_type, entity_id, ecto_timestamp, params) do
-    # TODO GenEvent?
-    args = [event_type, entity_id, ecto_timestamp, params]
+  def emit!(event_type, entity_id, timestamp, params) do
+    # TODO Consider GenEvent?
+    args = [event_type, entity_id, timestamp, params]
     [__MODULE__.Projection,
      __MODULE__.Store,
      __MODULE__.Broadcast]

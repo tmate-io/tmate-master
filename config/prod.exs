@@ -18,6 +18,9 @@ config :tmate, Tmate.Endpoint,
 # XXX If SSL options are needed. See tmate-websocket for example
 config :phoenix, :serve_endpoints, true
 
+config :tmate, :master,
+  wsapi_key: System.get_env("MASTER_WSAPI_KEY")
+
 # Do not print debug messages in production
 config :logger, level: :info
 

@@ -15,6 +15,10 @@ defmodule Tmate.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :ws_api do
+    plug :accepts, ["json"]
+  end
+
   scope "/api", Tmate do
     pipe_through :api
 
@@ -27,6 +31,11 @@ defmodule Tmate.Router do
 
     post "/signup",          SigninController, :signup
     post "/signup/validate", SigninController, :validate
+  end
+
+  scope "/wsapi", Tmate do
+    pipe_through :ws_api
+    post "/webhook", InternalApiController, :webhook
   end
 
   scope "/", Tmate do
