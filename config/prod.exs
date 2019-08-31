@@ -24,12 +24,14 @@ config :tmate, :master,
 # Do not print debug messages in production
 config :logger, level: :info
 
+pg = URI.parse(System.get_env("PG_URI", "pg://user:pass@host:5432/db"))
 config :tmate, Tmate.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("PG_USERNAME", "postgres"),
-  password: System.get_env("PG_PASSWORD", "postgres"),
-  database: System.get_env("PG_DATABASE", "tmate_prod"),
-  hostname: System.get_env("PG_HOSTNAME", "postgres"),
+  username: pg.userinfo |> String.split(":") |> Enum.at(0),
+  password: pg.userinfo |> String.split(":") |> Enum.at(1),
+  database: pg.path |> String.split("/") |> Enum.at(1),
+  port: pg.port,
+  hostname: pg.host,
   pool_size: System.get_env("PG_POOLSIZE", "20") |> String.to_integer(),
   ssl: System.get_env("PG_SSL_CA_CERT") != nil,
   ssl_opts: [cacertfile: System.get_env("PG_SSL_CA_CERT")]
