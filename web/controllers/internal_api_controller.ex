@@ -12,7 +12,7 @@ defmodule Tmate.InternalApiController do
       {:ok, timestamp, 0} = DateTime.from_iso8601(timestamp)
       timestamp = DateTime.truncate(timestamp, :second)
       event_type = String.to_atom(event_type)
-      params = params |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
+      params = params |> map_convert_string_keys_to_atom
 
       Tmate.Event.emit!(event_type, entity_id, timestamp, params)
 
