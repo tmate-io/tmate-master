@@ -20,7 +20,7 @@ defmodule Tmate.Endpoint do
     plug Phoenix.CodeReloader
   end
 
-  plug Tmate.RemoteIpPlug
+  plug Tmate.PlugRemoteIp
   plug Plug.Logger
 
   plug Plug.Parsers,
