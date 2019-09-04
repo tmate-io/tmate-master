@@ -13,7 +13,6 @@ config :tmate, Tmate.Endpoint,
   cache_static_lookup: false,
   check_origin: false,
   secret_key_base: "rzC2wqnmk0VeKRZHiMtPDAkd5QeWdPSSX2H9pknPBgb4rdOA7TEqMq9Umm5bjFPs",
-  static_url: [host: "localhost", port: 4080],
   host_url: "http://localhost:4000"
 
 # Watch static and templates for browser reloading.

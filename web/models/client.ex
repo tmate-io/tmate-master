@@ -7,9 +7,7 @@ defmodule Tmate.Client do
     belongs_to :session,  Tmate.Session, type: :binary_id, references: :id
     field :ip_address,    :string
     field :joined_at,     :utc_datetime
-    field :left_at,       :utc_datetime
     field :readonly,      :boolean
-    field :latency_stats, :map
     belongs_to :identity, Tmate.Identity, references: :id
   end
 

@@ -8,15 +8,21 @@ defmodule Tmate do
 
     Tmate.Monitoring.setup()
 
-    {:ok, monitoring_options} = Application.fetch_env(:tmate, Tmate.Monitoring.Endpoint)
-
     children = [
       # FIXME redis connection is not *necessary* to our application.
       # supervisor(Tmate.Redis, []),
       supervisor(Tmate.Endpoint, []),
-      Plug.Cowboy.child_spec(scheme: :http, plug: Tmate.Monitoring.Endpoint, options: monitoring_options),
       worker(Tmate.Repo, []),
     ]
+
+    {:ok, monitoring_options} = Application.fetch_env(:tmate, Tmate.Monitoring.Endpoint)
+    children = if monitoring_options[:enabled] do
+      children ++ [
+        Plug.Cowboy.child_spec(scheme: :http, plug: Tmate.Monitoring.Endpoint, options: monitoring_options[:cowboy_opts])
+      ]
+    else
+      children
+    end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

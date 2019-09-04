@@ -9,7 +9,7 @@ defmodule Tmate.Event.Projection.Session do
   import Ecto.Query
 
   defmacro handled_events do
-    [:session_register, :session_open, :session_close,
+    [:session_register, :session_open, :session_close, :session_disconnect,
      :session_join, :session_left, :session_stats]
   end
 
@@ -23,9 +23,8 @@ defmodule Tmate.Event.Projection.Session do
     Tmate.EctoHelpers.get_or_insert!(identity, [:type, :key])
   end
 
-  defp close_session_clients(session_id, timestamp) do
-    from(c in Client, where: c.session_id == ^session_id and is_nil(c.left_at))
-    |> Repo.update_all(set: [left_at: timestamp])
+  defp close_session_clients(session_id) do
+    from(c in Client, where: c.session_id == ^session_id) |> Repo.delete_all()
   end
 
   def handle_event(:session_register, id, timestamp, params) do
@@ -36,26 +35,41 @@ defmodule Tmate.Event.Projection.Session do
                    %{ip_address: ip_address, pubkey: pubkey,
                      ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
                      stoken: stoken, stoken_ro: stoken_ro}=params) do
-    identity = get_or_insert_identity!("ssh", pubkey)
+    Repo.transaction fn ->
+      identity = get_or_insert_identity!("ssh", pubkey)
 
-    session_params = %{id: id, host_identity_id: identity.id, host_last_ip: ip_address,
-                       ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
-                       stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp}
-    Session.changeset(%Session{}, session_params) |> Tmate.EctoHelpers.get_or_insert!
+      session_params = %{id: id, host_identity_id: identity.id, host_last_ip: ip_address,
+                         ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
+                         stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp}
+      Session.changeset(%Session{}, session_params) |> Tmate.EctoHelpers.get_or_insert!
+
+      if params[:reconnected] do
+        close_session_clients(id)
+        Session.changeset(%Session{id: id}, %{disconnected_at: nil}) |> Repo.update
+      end
+    end
 
     if params[:reconnected] do
-      close_session_clients(id, timestamp)
+      Logger.info("Reconnected session id=#{id}")
+    else
+      Logger.info("New session id=#{id}")
     end
-
-    Logger.info("New session id=#{id}")
   end
 
-  def handle_event(:session_close, id, timestamp, _params) do
+  def handle_event(:session_close, id, _timestamp, _params) do
     Repo.transaction fn ->
-      close_session_clients(id, timestamp)
-      Session.changeset(%Session{id: id}, %{closed_at: timestamp}) |> Repo.update
+      close_session_clients(id)
+      %Session{id: id} |> Repo.delete
     end
     Logger.info("Closed session id=#{id}")
+  end
+
+  def handle_event(:session_disconnect, id, timestamp, _params) do
+    Repo.transaction fn ->
+      close_session_clients(id)
+      Session.changeset(%Session{id: id}, %{disconnected_at: timestamp}) |> Repo.update
+    end
+    Logger.info("Disconnected session id=#{id}")
   end
 
   def handle_event(:session_join, sid, timestamp,
@@ -71,17 +85,17 @@ defmodule Tmate.Event.Projection.Session do
     Logger.info("Client joined session sid=#{sid}, cid=#{cid}")
   end
 
-  def handle_event(:session_left, sid, timestamp, %{id: cid}) do
-    Client.changeset(%Client{id: cid}, %{left_at: timestamp}) |> Repo.update
+  def handle_event(:session_left, sid, _timestamp, %{id: cid}) do
+    %Client{id: cid} |> Repo.delete
     Logger.info("Client left session sid=#{sid}, cid=#{cid}")
   end
 
-  def handle_event(:session_stats, sid, _timestamp, %{id: cid, latency: latency_stats}) do
-    case cid do
-      nil ->
-        Session.changeset(%Session{id: sid}, %{host_latency_stats: latency_stats}) |> Repo.update
-      _ ->
-        Client.changeset(%Client{id: cid}, %{latency_stats: latency_stats}) |> Repo.update
-    end
+  def handle_event(:session_stats, _sid, _timestamp, %{id: _cid, latency: _latency_stats}) do
+    # case cid do
+      # nil ->
+        # Session.changeset(%Session{id: sid}, %{host_latency_stats: latency_stats}) |> Repo.update
+      # _ ->
+        # Client.changeset(%Client{id: cid}, %{latency_stats: latency_stats}) |> Repo.update
+    # end
   end
 end

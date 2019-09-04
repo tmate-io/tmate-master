@@ -17,7 +17,8 @@ config :tmate, Tmate.Endpoint,
 config :tmate, ecto_repos: [Tmate.Repo]
 
 config :tmate, Tmate.Monitoring.Endpoint,
-  port: 4100
+  enabled: true,
+  cowboy_opts: [port: 4100]
 config :prometheus, Tmate.PlugExporter,
   path: "/metrics",
   format: :auto,

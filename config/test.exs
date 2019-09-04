@@ -12,6 +12,9 @@ config :logger, level: if System.get_env("DEBUG"), do: :debug, else: :warn
 # Set a higher stacktrace during test
 config :phoenix, :stacktrace_depth, 20
 
+config :tmate, Tmate.Monitoring.Endpoint,
+  enabled: false
+
 # Configure your database
 config :tmate, Tmate.Repo,
   adapter: Ecto.Adapters.Postgres,
