@@ -11,8 +11,19 @@ config :tmate, Tmate.Endpoint,
   root: ".",
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: Tmate.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+           adapter: Phoenix.PubSub.PG2],
+  instrumenters: [Tmate.Endpoint.PhoenixInstrumenter]
+
 config :tmate, ecto_repos: [Tmate.Repo]
+
+config :tmate, Tmate.Monitoring.Endpoint,
+  port: 4100
+config :prometheus, Tmate.PlugExporter,
+  path: "/metrics",
+  format: :auto,
+  registry: :default,
+  auth: false
+
 
 config :logger,
   backends: [:console]

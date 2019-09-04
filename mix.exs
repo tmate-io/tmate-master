@@ -18,7 +18,8 @@ defmodule Tmate.Mixfile do
     [mod: {Tmate, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :plug_cowboy, :logger,
                     :phoenix_ecto, :postgrex, :oauth2,
-                    :uuid, :redix, :poolboy, :jason, :ecto_sql]]
+                    :uuid, :redix, :poolboy, :jason, :ecto_sql,
+                    :prometheus_plugs, :prometheus_phoenix, :prometheus_ecto]]
   end
 
   # Specifies which paths to compile per environment
@@ -45,6 +46,10 @@ defmodule Tmate.Mixfile do
       {:cowboy, "~> 2.0"},
       {:plug_cowboy, ">= 0.0.0"},
       {:distillery, "~> 2.0"},
+      {:prometheus_plugs, "~> 1.1.1"},
+      {:prometheus_phoenix, "~> 1.3.0"},
+      {:prometheus_ecto, "~> 1.4.1"},
+
     ]
   end
 end

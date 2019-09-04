@@ -6,10 +6,15 @@ defmodule Tmate do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    Tmate.Monitoring.setup()
+
+    {:ok, monitoring_options} = Application.fetch_env(:tmate, Tmate.Monitoring.Endpoint)
+
     children = [
       # FIXME redis connection is not *necessary* to our application.
       # supervisor(Tmate.Redis, []),
       supervisor(Tmate.Endpoint, []),
+      Plug.Cowboy.child_spec(scheme: :http, plug: Tmate.Monitoring.Endpoint, options: monitoring_options),
       worker(Tmate.Repo, []),
     ]
 

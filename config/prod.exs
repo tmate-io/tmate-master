@@ -18,6 +18,9 @@ config :tmate, Tmate.Endpoint,
 # XXX If SSL options are needed. See tmate-websocket for example
 config :phoenix, :serve_endpoints, true
 
+config :tmate, Tmate.Monitoring.Endpoint,
+  port: System.get_env("MASTER_METRICS_PORT", "4100") |> String.to_integer()
+
 config :tmate, :master,
   wsapi_key: System.get_env("MASTER_WSAPI_KEY")
 
