@@ -30,4 +30,9 @@ defmodule Tmate.Factory do
     %{event_type: :session_left,
       id: sequence(:client_id, & &1)}
   end
+
+  def event_session_disconnect_factory do
+    %{event_type: :session_disconnect,
+      entity_id: UUID.uuid1}
+  end
 end

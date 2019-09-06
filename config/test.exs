@@ -15,11 +15,14 @@ config :phoenix, :stacktrace_depth, 20
 config :tmate, Tmate.Monitoring.Endpoint,
   enabled: false
 
+config :tmate, :master,
+  wsapi_key: "webhookkey"
+
 # Configure your database
 config :tmate, Tmate.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  # username: "postgres",
+  # password: "postgres",
   database: "tmate_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

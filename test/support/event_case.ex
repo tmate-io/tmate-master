@@ -23,6 +23,13 @@ defmodule Tmate.EventCase do
     end
   end
 
+
+  # Import conveniences for testing with connections
+  use Phoenix.ConnTest
+  import Tmate.Router.Helpers
+  # The default endpoint for testing
+  @endpoint Tmate.Endpoint
+
   @doc """
   Helper for returning list of errors in model when passed certain data.
 
@@ -51,21 +58,29 @@ defmodule Tmate.EventCase do
 
   setup do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Tmate.Repo)
-    {:ok, pid} = Tmate.Websocket.Endpoint.start_link
-    :ok = Ecto.Adapters.SQL.Sandbox.allow(Tmate.Repo, self(), pid)
-    {:ok, %{websocket_endpoint: pid}}
+    # {:ok, pid} = Tmate.Websocket.Endpoint.start_link
+    # :ok = Ecto.Adapters.SQL.Sandbox.allow(Tmate.Repo, self(), self())
+    {:ok, %{}}
   end
 
-  def emit_event(context, event) do
+  def emit_event(event) do
     {m, params} = Map.split(event, [:event_type, :entity_id])
-    emit_raw_event(context, m[:event_type], m[:entity_id], params)
+    timestamp = current_timestamp()
+    emit_raw_event(m[:event_type], m[:entity_id], timestamp, params)
     event
   end
 
-  def emit_raw_event(%{websocket_endpoint: pid}, event_type, entity_id, params) do
-    timestamp = current_timestamp()
-    {:reply, :ok} = Tmate.Websocket.Endpoint.call(pid,
-                     {:event, timestamp, event_type, entity_id, params})
+  def emit_raw_event(event_type, entity_id, timestamp, params) do
+    {:ok, master_opts} = Application.fetch_env(:tmate, :master)
+    api_key = master_opts[:wsapi_key]
+    payload = Jason.encode!(%{type: event_type, entity_id: entity_id, timestamp: timestamp,
+                              userdata: api_key, params: params})
+
+    build_conn()
+    |> put_req_header("content-type", "application/json")
+    |> put_req_header("accept", "application/json")
+    |> post("/wsapi/webhook", payload)
+    |> json_response(200)
   end
 
   defp current_timestamp() do
