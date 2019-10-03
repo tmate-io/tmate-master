@@ -59,7 +59,10 @@ defmodule Tmate.Event.Projection.Session do
   def handle_event(:session_close, id, _timestamp, _params) do
     Repo.transaction fn ->
       close_session_clients(id)
-      %Session{id: id} |> Repo.delete
+      # We porivde the stale_error_field option to avoid the
+      # Ecto.StaleEntryError exception.
+      # This is useful as session_close event can be duplicated.
+      %Session{id: id} |> Repo.delete(stale_error_field: :_stale_)
     end
     Logger.info("Closed session id=#{id}")
   end
@@ -67,7 +70,10 @@ defmodule Tmate.Event.Projection.Session do
   def handle_event(:session_disconnect, id, timestamp, _params) do
     Repo.transaction fn ->
       close_session_clients(id)
-      Session.changeset(%Session{id: id}, %{disconnected_at: timestamp}) |> Repo.update
+      # The session_disconnect can arrive out of order with session_close,
+      # so we allow the session to be absent in the DB.
+      Session.changeset(%Session{id: id}, %{disconnected_at: timestamp})
+      |> Repo.update(stale_error_field: :_stale_)
     end
     Logger.info("Disconnected session id=#{id}")
   end
@@ -86,7 +92,8 @@ defmodule Tmate.Event.Projection.Session do
   end
 
   def handle_event(:session_left, sid, _timestamp, %{id: cid}) do
-    %Client{id: cid} |> Repo.delete
+    # The session_left can be duplicated. So we allow the record to be absent.
+    %Client{id: cid} |> Repo.delete(stale_error_field: :_stale_)
     Logger.info("Client left session sid=#{sid}, cid=#{cid}")
   end
 
