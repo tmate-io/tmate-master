@@ -99,4 +99,21 @@ defmodule SessionTest do
     session = Repo.preload(session, :clients)
     assert session.clients |> Enum.count == 1
   end
+
+  test "session_disconnect/reconnect with mix generations" do
+    session_event = emit_event(build(:event_session_register, generation: 1))
+    _reconnect_event = emit_event(build(:event_session_register, entity_id: session_event.entity_id, generation: 2))
+
+    _client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id, generation: 1))
+
+    session = Repo.get(Session, session_event.entity_id)
+    session = Repo.preload(session, :clients)
+    assert session.clients |> Enum.count == 0
+
+    _client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id, generation: 2))
+
+    session = Repo.get(Session, session_event.entity_id)
+    session = Repo.preload(session, :clients)
+    assert session.clients |> Enum.count == 1
+  end
 end

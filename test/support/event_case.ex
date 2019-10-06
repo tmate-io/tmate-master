@@ -26,7 +26,6 @@ defmodule Tmate.EventCase do
 
   # Import conveniences for testing with connections
   use Phoenix.ConnTest
-  import Tmate.Router.Helpers
   # The default endpoint for testing
   @endpoint Tmate.Endpoint
 
@@ -64,26 +63,23 @@ defmodule Tmate.EventCase do
   end
 
   def emit_event(event) do
-    {m, params} = Map.split(event, [:event_type, :entity_id])
-    timestamp = current_timestamp()
-    emit_raw_event(m[:event_type], m[:entity_id], timestamp, params)
+    {m, params} = Map.split(event, [:event_type, :entity_id, :generation])
+    timestamp = DateTime.utc_now
+    generation = m[:generation] || 1
+    emit_raw_event(m[:event_type], m[:entity_id], timestamp, generation, params)
     event
   end
 
-  def emit_raw_event(event_type, entity_id, timestamp, params) do
+  def emit_raw_event(event_type, entity_id, timestamp, generation, params) do
     {:ok, master_opts} = Application.fetch_env(:tmate, :master)
     api_key = master_opts[:wsapi_key]
     payload = Jason.encode!(%{type: event_type, entity_id: entity_id, timestamp: timestamp,
-                              userdata: api_key, params: params})
+                              generation: generation, userdata: api_key, params: params})
 
     build_conn()
     |> put_req_header("content-type", "application/json")
     |> put_req_header("accept", "application/json")
     |> post("/wsapi/webhook", payload)
     |> json_response(200)
-  end
-
-  defp current_timestamp() do
-    DateTime.truncate(DateTime.utc_now, :second)
   end
 end

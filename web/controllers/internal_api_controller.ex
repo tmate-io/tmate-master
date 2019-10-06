@@ -5,16 +5,17 @@ defmodule Tmate.InternalApiController do
   def webhook(conn, event_payload) do
     %{"type" => event_type, "entity_id" => entity_id,
       "timestamp" => timestamp, "userdata" => userdata,
-      "params" => params} = event_payload
+      "generation" => generation, "params" => params} = event_payload
 
     {:ok, master_options} = Application.fetch_env(:tmate, :master)
     if Plug.Crypto.secure_compare(userdata, master_options[:wsapi_key]) do
       {:ok, timestamp, 0} = DateTime.from_iso8601(timestamp)
-      timestamp = DateTime.truncate(timestamp, :second)
+
+      # Note: the incoming data is trusted, it's okay to convert to atom.
       event_type = String.to_atom(event_type)
       params = params |> map_convert_string_keys_to_atom
 
-      Tmate.Event.emit!(event_type, entity_id, timestamp, params)
+      Tmate.Event.emit!(event_type, entity_id, timestamp, generation, params)
 
       conn
       |> put_status(200)
