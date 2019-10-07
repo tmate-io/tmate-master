@@ -16,10 +16,18 @@ defmodule Tmate do
     ]
 
     {:ok, monitoring_options} = Application.fetch_env(:tmate, Tmate.Monitoring.Endpoint)
+    {:ok, scheduler_options} = Application.fetch_env(:tmate, Tmate.Scheduler)
+
     children = if monitoring_options[:enabled] do
       children ++ [
         Plug.Cowboy.child_spec(scheme: :http, plug: Tmate.Monitoring.Endpoint, options: monitoring_options[:cowboy_opts])
       ]
+    else
+      children
+    end
+
+    children = if scheduler_options[:enabled] do
+      children ++ [Tmate.Scheduler]
     else
       children
     end

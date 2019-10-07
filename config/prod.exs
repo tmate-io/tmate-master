@@ -30,6 +30,7 @@ config :logger, level: :info
 pg = URI.parse(System.get_env("PG_URI", "pg://user:pass@host:5432/db"))
 config :tmate, Tmate.Repo,
   adapter: Ecto.Adapters.Postgres,
+  timeout: 60000,
   username: pg.userinfo |> String.split(":") |> Enum.at(0),
   password: pg.userinfo |> String.split(":") |> Enum.at(1),
   database: pg.path |> String.split("/") |> Enum.at(1),
@@ -38,3 +39,16 @@ config :tmate, Tmate.Repo,
   pool_size: System.get_env("PG_POOLSIZE", "20") |> String.to_integer(),
   ssl: System.get_env("PG_SSL_CA_CERT") != nil,
   ssl_opts: [cacertfile: System.get_env("PG_SSL_CA_CERT")]
+
+config :tzdata, :autoupdate, :disabled
+
+machine_index = System.get_env("HOSTNAME", "master-0")
+                  |> String.split("-") |> Enum.at(-1) |> String.to_integer()
+
+config :tmate, Tmate.Scheduler,
+  enabled: machine_index == 0,
+  jobs: [
+    # every 5 mins
+    {"*/5 * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
+    {"*/5 * * * *", {Tmate.SessionCleaner, :prune_disconnected_sessions, []}},
+  ]

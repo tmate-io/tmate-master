@@ -51,3 +51,11 @@ config :tmate, :github_oauth,
 
 config :tmate, :redis,
   url: "redis://localhost:6379/0"
+
+config :tmate, Tmate.Scheduler,
+  enabled: true,
+  jobs: [
+    # Every minute
+    {"* * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
+    {"* * * * *", {Tmate.SessionCleaner, :prune_disconnected_sessions, []}},
+  ]

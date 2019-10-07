@@ -15,11 +15,7 @@ defmodule Tmate.Mixfile do
   # Configuration for the OTP application
   # Type `mix help compile.app` for more information
   def application do
-    [mod: {Tmate, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :plug_cowboy, :logger,
-                    :phoenix_ecto, :postgrex, :oauth2,
-                    :uuid, :redix, :poolboy, :jason, :ecto_sql,
-                    :prometheus_plugs, :prometheus_phoenix, :prometheus_ecto]]
+    [mod: {Tmate, []}]
   end
 
   # Specifies which paths to compile per environment
@@ -49,7 +45,9 @@ defmodule Tmate.Mixfile do
       {:prometheus_plugs, "~> 1.1.1"},
       {:prometheus_phoenix, "~> 1.3.0"},
       {:prometheus_ecto, "~> 1.4.1"},
-
+      {:quantum, "~> 2.3"},
+      {:timex, "~> 3.0"},
+      {:httpoison, ">= 0.0.0"},
     ]
   end
 end

@@ -21,6 +21,15 @@ defmodule Tmate.Session do
     |> unique_constraint(:id, name: :sessions_pkey)
   end
 
+  def ws_api_baseurl(ws_url_fmt) do
+    # e.g., wss://lon1.tmate.io:33/ws/session/%s
+    case URI.parse(ws_url_fmt).authority do
+      # dev mode: terrible hack for now
+      "localhost:4001" -> "http://session:4001"
+      host -> "https://#{host}"
+    end
+  end
+
   def edge_srv_hostname(ssh_hostname) do
     # ssh -p2200 %s@ny3.tmate.io
     ssh_hostname

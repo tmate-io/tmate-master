@@ -20,6 +20,7 @@ COPY config config
 COPY priv priv
 COPY rel rel
 
+ENV HOSTNAME "master-0"
 RUN mix do phx.digest, distillery.release --no-tar
 
 ### Minimal run-time image
