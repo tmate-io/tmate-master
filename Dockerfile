@@ -21,7 +21,9 @@ COPY priv priv
 COPY rel rel
 
 ENV HOSTNAME "master-0"
-RUN mix do phx.digest, distillery.release --no-tar
+RUN mix do phx.digest, distillery.release --no-tar && \
+        mkdir _build/lib-layer && \
+        mv _build/prod/rel/tmate/lib/tmate* _build/lib-layer
 
 ### Minimal run-time image
 FROM alpine:3.9
@@ -35,7 +37,10 @@ ENV MIX_ENV prod
 WORKDIR /opt/app
 
 # Copy release from build stage
+# We copy in two passes to benefit from docker layers
+# Note "COPY some_dir dst" will copy the content of some_dir into dst
 COPY --from=build /build/_build/prod/rel/* .
+COPY --from=build /build/_build/lib-layer lib/
 
 USER app
 
