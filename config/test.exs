@@ -21,8 +21,8 @@ config :tmate, :master,
 # Configure your database
 config :tmate, Tmate.Repo,
   adapter: Ecto.Adapters.Postgres,
-  # username: "postgres",
-  # password: "postgres",
+  username: "postgres",
+  password: "postgres",
   database: "tmate_test",
-  hostname: "localhost",
+  hostname: "postgres",
   pool: Ecto.Adapters.SQL.Sandbox
