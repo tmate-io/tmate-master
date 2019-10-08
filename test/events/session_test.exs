@@ -10,8 +10,7 @@ defmodule SessionTest do
     emit_event(session_event)
     assert Repo.one(from Session, select: count("*")) == 1
 
-    # guard against dup events
-    emit_event(session_event)
+    emit_event(session_event) # duplicate event, should be okay
     assert Repo.one(from Session, select: count("*")) == 1
 
     session = Repo.get(Session, session_event.entity_id)
@@ -32,11 +31,13 @@ defmodule SessionTest do
     _client_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
 
     assert Repo.one(from c in Client, select: count("*")) == 1
-    _close_event = emit_event(build(:event_session_close, entity_id: session_event.entity_id))
+    close_event = emit_event(build(:event_session_close, entity_id: session_event.entity_id))
     assert Repo.one(from c in Client, select: count("*")) == 0
 
     session = Repo.get(Session, session_event.entity_id)
     assert session == nil
+
+    emit_event(close_event) # duplicate
   end
 
   test "session_join" do
@@ -44,6 +45,7 @@ defmodule SessionTest do
     client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
     client2_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id,
                                      type: "web", identity: "xxx", readonly: true))
+    emit_event(client2_event) # test for duplicate event
 
     session = Repo.get(Session, session_event.entity_id)
     session = Repo.preload(session, :clients)
@@ -75,7 +77,13 @@ defmodule SessionTest do
     session = Repo.preload(session, :clients)
     assert session.clients |> Enum.count == 2
 
-    _close_event = emit_event(build(:event_session_left, entity_id: session_event.entity_id, id: client2_event.id))
+    left_event = emit_event(build(:event_session_left, entity_id: session_event.entity_id, id: client2_event.id))
+
+    session = Repo.get(Session, session_event.entity_id)
+    session = Repo.preload(session, :clients)
+    assert session.clients |> Enum.count == 1
+
+    emit_event(left_event) # duplicate event
 
     session = Repo.get(Session, session_event.entity_id)
     session = Repo.preload(session, :clients)

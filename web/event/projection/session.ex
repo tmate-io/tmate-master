@@ -87,7 +87,8 @@ defmodule Tmate.Event.Projection.Session do
     identity = get_or_insert_identity!(to_string(type), key)
     client_params = Map.merge(client_params, %{identity_id: identity.id})
 
-    Client.changeset(%Client{}, client_params) |> Repo.insert!
+    Client.changeset(%Client{}, client_params) |> Tmate.EctoHelpers.get_or_insert!
+
     Logger.info("Client joined session sid=#{sid}, cid=#{cid}")
   end
 

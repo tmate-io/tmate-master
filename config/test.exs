@@ -26,3 +26,6 @@ config :tmate, Tmate.Repo,
   database: "tmate_test",
   hostname: "postgres",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :tmate, Tmate.Scheduler,
+  enabled: false
