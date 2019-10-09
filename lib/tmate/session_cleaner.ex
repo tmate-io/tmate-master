@@ -10,8 +10,15 @@ defmodule Tmate.SessionCleaner do
 
   def prune_disconnected_sessions() do
     Logger.info("Pruning disconnected sessions since #{@session_timeout_hours} hours ago")
-    from(s in Session, where: s.disconnected_at < ago(@session_timeout_hours, "hour"))
+
+    {n_pruned, sids} = from(s in Session,
+              where: s.disconnected_at < ago(@session_timeout_hours, "hour"),
+              select: s.id)
     |> Repo.delete_all
+
+    if n_pruned != 0 do
+      Logger.info("Pruned #{n_pruned} sessions: #{sids}")
+    end
   end
 
   def check_for_disconnected_sessions() do
@@ -50,6 +57,7 @@ defmodule Tmate.SessionCleaner do
           |> Enum.map(& {&1, sid_generations[&1]})
           |> Enum.each(fn {sid, generation} ->
             # 3) emit the events for the stale entries
+            Logger.warn("Emitting disconnect event for stale session id=#{sid}")
             Event.emit!(:session_disconnect, sid, DateTime.utc_now, generation, %{})
           end)
     end

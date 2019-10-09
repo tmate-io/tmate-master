@@ -55,7 +55,7 @@ config :tmate, :redis,
 config :tmate, Tmate.Scheduler,
   enabled: true,
   jobs: [
-    # Every minute
-    {"* * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
-    {"* * * * *", {Tmate.SessionCleaner, :prune_disconnected_sessions, []}},
+    # Every 5 minutes
+    {"*/5 * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
+    {"*/5 * * * *", {Tmate.SessionCleaner, :prune_disconnected_sessions, []}},
   ]
