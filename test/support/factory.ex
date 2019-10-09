@@ -9,7 +9,9 @@ defmodule Tmate.Factory do
       ws_url_fmt: "https://tmate.io/ws/session/%s",
       ssh_cmd_fmt: "ssh %s@tmate.io",
       stoken: sequence(:token, &"STOKEN___________________RW#{&1}"),
-      stoken_ro: sequence(:token, &"STOKEN___________________RO#{&1}")}
+      stoken_ro: sequence(:token, &"STOKEN___________________RO#{&1}"),
+      reconnected: false
+      }
   end
 
   def event_session_close_factory do

@@ -34,7 +34,14 @@ defmodule Tmate.Event.Projection.Session do
   def handle_event(:session_open, id, timestamp,
                    %{ip_address: ip_address, pubkey: pubkey,
                      ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
-                     stoken: stoken, stoken_ro: stoken_ro}=params) do
+                     stoken: stoken, stoken_ro: stoken_ro,
+                     reconnected: reconnected}=_params) do
+    if reconnected do
+      Logger.info("Reconnected session id=#{id}")
+    else
+      Logger.info("New session id=#{id}")
+    end
+
     Repo.transaction fn ->
       identity = get_or_insert_identity!("ssh", pubkey)
 
@@ -43,20 +50,16 @@ defmodule Tmate.Event.Projection.Session do
                          stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp}
       Session.changeset(%Session{}, session_params) |> Tmate.EctoHelpers.get_or_insert!
 
-      if params[:reconnected] do
+      if reconnected do
         close_session_clients(id)
         Session.changeset(%Session{id: id}, %{disconnected_at: nil}) |> Repo.update
       end
     end
-
-    if params[:reconnected] do
-      Logger.info("Reconnected session id=#{id}")
-    else
-      Logger.info("New session id=#{id}")
-    end
   end
 
   def handle_event(:session_close, id, _timestamp, _params) do
+    Logger.info("Closed session id=#{id}")
+
     Repo.transaction fn ->
       close_session_clients(id)
       # We porivde the stale_error_field option to avoid the
@@ -64,10 +67,11 @@ defmodule Tmate.Event.Projection.Session do
       # This is useful as session_close event can be duplicated.
       %Session{id: id} |> Repo.delete(stale_error_field: :_stale_)
     end
-    Logger.info("Closed session id=#{id}")
   end
 
   def handle_event(:session_disconnect, id, timestamp, _params) do
+    Logger.info("Disconnected session id=#{id}")
+
     Repo.transaction fn ->
       close_session_clients(id)
       # The session_disconnect can arrive out of order with session_close,
@@ -75,12 +79,13 @@ defmodule Tmate.Event.Projection.Session do
       Session.changeset(%Session{id: id}, %{disconnected_at: timestamp})
       |> Repo.update(stale_error_field: :_stale_)
     end
-    Logger.info("Disconnected session id=#{id}")
   end
 
   def handle_event(:session_join, sid, timestamp,
                    %{id: cid, ip_address: ip_address, type: type,
                      identity: key, readonly: readonly}) do
+    Logger.info("Client joined session sid=#{sid}, cid=#{cid}")
+
     client_params = %{id: cid, session_id: sid,
                       ip_address: ip_address, joined_at: timestamp, readonly: readonly}
 
@@ -88,14 +93,13 @@ defmodule Tmate.Event.Projection.Session do
     client_params = Map.merge(client_params, %{identity_id: identity.id})
 
     Client.changeset(%Client{}, client_params) |> Tmate.EctoHelpers.get_or_insert!
-
-    Logger.info("Client joined session sid=#{sid}, cid=#{cid}")
   end
 
   def handle_event(:session_left, sid, _timestamp, %{id: cid}) do
+    Logger.info("Client left session sid=#{sid}, cid=#{cid}")
+
     # The session_left can be duplicated. So we allow the record to be absent.
     %Client{id: cid} |> Repo.delete(stale_error_field: :_stale_)
-    Logger.info("Client left session sid=#{sid}, cid=#{cid}")
   end
 
   def handle_event(:session_stats, _sid, _timestamp, %{id: _cid, latency: _latency_stats}) do
