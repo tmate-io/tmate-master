@@ -90,27 +90,24 @@ defmodule SessionTest do
     assert session.clients |> Enum.count == 1
   end
 
-  test "session_disconnect/reconnect" do
+  test "session reconnect" do
     session_event = emit_event(build(:event_session_register))
-    _client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
 
+    assert Repo.get(Session, session_event.entity_id).disconnected_at == nil
     _disconnect_event = emit_event(build(:event_session_disconnect, entity_id: session_event.entity_id))
+    assert Repo.get(Session, session_event.entity_id).disconnected_at != nil
 
-    session = Repo.get(Session, session_event.entity_id)
-    session = Repo.preload(session, :clients)
-    assert session.clients |> Enum.count == 0
-
-    _reconnect_event = emit_event(build(:event_session_register, entity_id: session_event.entity_id))
-    _client1_reco_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
-
-    session = Repo.get(Session, session_event.entity_id)
-    session = Repo.preload(session, :clients)
-    assert session.clients |> Enum.count == 1
+    session_event = emit_event(build(:event_session_register, entity_id: session_event.entity_id,
+                                      reconnected: true, ssh_cmd_fmt: "new_host"))
+    assert Repo.get(Session, session_event.entity_id).disconnected_at == nil
+    assert Repo.get(Session, session_event.entity_id).ssh_cmd_fmt == "new_host"
   end
 
   test "session_disconnect/reconnect with mix generations" do
     session_event = emit_event(build(:event_session_register, generation: 1))
     _reconnect_event = emit_event(build(:event_session_register, entity_id: session_event.entity_id, generation: 2))
+
+    _client1_event = emit_event(build(:event_session_disconnect, entity_id: session_event.entity_id, generation: 1))
 
     _client1_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id, generation: 1))
 

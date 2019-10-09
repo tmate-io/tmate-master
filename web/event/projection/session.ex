@@ -47,13 +47,14 @@ defmodule Tmate.Event.Projection.Session do
 
       session_params = %{id: id, host_identity_id: identity.id, host_last_ip: ip_address,
                          ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
-                         stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp}
-      Session.changeset(%Session{}, session_params) |> Tmate.EctoHelpers.get_or_insert!
+                         stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp,
+                         disconnected_at: nil}
+      Session.changeset(%Session{}, session_params)
+      |> Tmate.EctoHelpers.get_or_insert!
+      |> Session.changeset(session_params)
+      |> Repo.update
 
-      if reconnected do
-        close_session_clients(id)
-        Session.changeset(%Session{id: id}, %{disconnected_at: nil}) |> Repo.update
-      end
+      close_session_clients(id)
     end
   end
 
