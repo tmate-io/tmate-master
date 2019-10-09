@@ -102,13 +102,4 @@ defmodule Tmate.Event.Projection.Session do
     # The session_left can be duplicated. So we allow the record to be absent.
     %Client{id: cid} |> Repo.delete(stale_error_field: :_stale_)
   end
-
-  def handle_event(:session_stats, _sid, _timestamp, %{id: _cid, latency: _latency_stats}) do
-    # case cid do
-      # nil ->
-        # Session.changeset(%Session{id: sid}, %{host_latency_stats: latency_stats}) |> Repo.update
-      # _ ->
-        # Client.changeset(%Client{id: cid}, %{latency_stats: latency_stats}) |> Repo.update
-    # end
-  end
 end
