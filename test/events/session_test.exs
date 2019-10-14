@@ -28,6 +28,10 @@ defmodule SessionTest do
   test "session_close" do
     session_event = emit_event(build(:event_session_register))
 
+    session = Repo.get(Session, session_event.entity_id)
+    assert session.disconnected_at == nil
+    assert session.closed == false
+
     _client_event = emit_event(build(:event_session_join, entity_id: session_event.entity_id))
 
     assert Repo.one(from c in Client, select: count("*")) == 1
@@ -35,7 +39,8 @@ defmodule SessionTest do
     assert Repo.one(from c in Client, select: count("*")) == 0
 
     session = Repo.get(Session, session_event.entity_id)
-    assert session == nil
+    assert session.disconnected_at != nil
+    assert session.closed == true
 
     emit_event(close_event) # duplicate
   end

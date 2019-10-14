@@ -6,13 +6,15 @@ defmodule Tmate.SessionCleaner do
   alias Tmate.Event
   import Ecto.Query
 
-  @session_timeout_hours 3
+  def prune_sessions() do
+    prune_sessions({1, "week"})
+  end
 
-  def prune_disconnected_sessions() do
-    Logger.info("Pruning disconnected sessions since #{@session_timeout_hours} hours ago")
+  def prune_sessions({timeout_value, timeout_unit}) do
+    Logger.info("Pruning sessions since #{timeout_value} #{timeout_unit} ago")
 
     {n_pruned, sids} = from(s in Session,
-              where: s.disconnected_at < ago(@session_timeout_hours, "hour"),
+              where: s.disconnected_at < ago(^timeout_value, ^timeout_unit),
               select: s.id)
     |> Repo.delete_all
 
@@ -34,8 +36,8 @@ defmodule Tmate.SessionCleaner do
     end)
   end
 
-  def check_for_disconnected_sessions(base_url, session_ids) do
-    # When a websocket servers goes down, it does not notify disconnections.
+  defp check_for_disconnected_sessions(base_url, session_ids) do
+    # When a websocket serves goes down, it does not necessarily notify disconnections.
     # We'll emit these missings events here.
 
     # 1) we get the generations of the sessions

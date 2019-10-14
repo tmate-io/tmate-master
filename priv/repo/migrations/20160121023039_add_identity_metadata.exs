@@ -3,7 +3,6 @@ defmodule Tmate.Repo.Migrations.AddMetadataIdentity do
 
   alias Tmate.Repo
   alias Tmate.Identity
-  import Ecto.Query
 
   def change do
     alter table(:identities) do

@@ -48,7 +48,7 @@ machine_index = System.get_env("HOSTNAME", "master-0")
 config :tmate, Tmate.Scheduler,
   enabled: machine_index == 0,
   jobs: [
-    # every 5 mins
-    {"*/5 * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
-    {"*/5 * * * *", {Tmate.SessionCleaner, :prune_disconnected_sessions, []}},
+    # every minute
+    {"*/1 * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
+    {"*/1 * * * *", {Tmate.SessionCleaner, :prune_sessions, []}},
   ]

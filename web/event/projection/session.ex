@@ -10,7 +10,7 @@ defmodule Tmate.Event.Projection.Session do
 
   defmacro handled_events do
     [:session_register, :session_open, :session_close, :session_disconnect,
-     :session_join, :session_left, :session_stats]
+     :session_join, :session_left]
   end
 
   defp get_or_insert_identity!(type, key) do
@@ -48,7 +48,7 @@ defmodule Tmate.Event.Projection.Session do
       session_params = %{id: id, host_identity_id: identity.id, host_last_ip: ip_address,
                          ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
                          stoken: stoken, stoken_ro: stoken_ro, created_at: timestamp,
-                         disconnected_at: nil}
+                         disconnected_at: nil, closed: false}
       Session.changeset(%Session{}, session_params)
       |> Tmate.EctoHelpers.get_or_insert!
       |> Session.changeset(session_params)
@@ -58,15 +58,15 @@ defmodule Tmate.Event.Projection.Session do
     end
   end
 
-  def handle_event(:session_close, id, _timestamp, _params) do
+  def handle_event(:session_close, id, timestamp, _params) do
     Logger.info("Closed session id=#{id}")
 
     Repo.transaction fn ->
       close_session_clients(id)
-      # We porivde the stale_error_field option to avoid the
-      # Ecto.StaleEntryError exception.
-      # This is useful as session_close event can be duplicated.
-      %Session{id: id} |> Repo.delete(stale_error_field: :_stale_)
+
+      %Session{id: id}
+      |> Session.changeset(%{disconnected_at: timestamp, closed: true})
+      |> Repo.update()
     end
   end
 
@@ -75,10 +75,10 @@ defmodule Tmate.Event.Projection.Session do
 
     Repo.transaction fn ->
       close_session_clients(id)
-      # The session_disconnect can arrive out of order with session_close,
-      # so we allow the session to be absent in the DB.
-      Session.changeset(%Session{id: id}, %{disconnected_at: timestamp})
-      |> Repo.update(stale_error_field: :_stale_)
+
+      %Session{id: id}
+      |> Session.changeset(%{disconnected_at: timestamp})
+      |> Repo.update()
     end
   end
 

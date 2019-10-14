@@ -12,6 +12,7 @@ defmodule Tmate.Session do
     field      :stoken_ro,          :string
     field      :created_at,         :utc_datetime
     field      :disconnected_at,    :utc_datetime
+    field      :closed,             :boolean
     has_many   :clients,            Tmate.Client
   end
 
