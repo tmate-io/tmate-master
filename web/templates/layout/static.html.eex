@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
-    <title>tmate</title>
+    <link rel="stylesheet" media="screen" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" media="screen" href="/css/main.css">
+
+    <title>tmate • Instant terminal sharing</title>
+
     <style>
       body { background-color: #272B30; color: #C8C8C8; }
       body > #app-container > p.loading { margin: auto; margin-top: 100px; width: 200px; text-align: center; }
@@ -14,9 +18,28 @@
   </head>
 
   <body>
-    <div id="app-container"><%= render @view_module, @view_template, assigns %></div>
-    <script src="<%= static_url(@conn, "/js/index.js") %>"></script>
+    <div class="container">
+      <%= render @view_module, @view_template, assigns %>
+    </div>
+
+    <script src="/js/jquery-2.0.2.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script>
+
+    <div class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+            <div class="digitalocean">
+              <p>Proudly hosted by</p>
+              <p><a href="https://www.digitalocean.com/"><img src="/img/digitalocean.png" alt="DigialOcean"/></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-41775490-1', 'tmate.io');ga('send', 'pageview');</script>
   </body>
 </html>
+
