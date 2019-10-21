@@ -67,14 +67,15 @@ defmodule Tmate.SessionCleaner do
 
   defp get_stale_sessions(session_ids, base_url) do
     {:ok, master_options} = Application.fetch_env(:tmate, :master)
-    payload = %{session_ids: session_ids, auth_key: master_options[:wsapi_key]}
-    # terrible hack for now
+    # TODO change URL to /internal_api/ with other authentication method
+    payload = %{session_ids: session_ids, auth_key: master_options[:internal_api][:auth_token]}
     case json_post("#{base_url}/master_api/get_stale_sessions", payload) do
       {:ok, resp} -> {:ok, resp["stale_ids"]}
       {:error, reason} -> {:error, reason}
     end
   end
 
+  # TODO extract this in a module
   defp json_post(url, payload) do
     payload = Jason.encode!(payload)
     headers = [{"Content-Type", "application/json"}, {"Accept", "application/json"}]

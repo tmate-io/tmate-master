@@ -26,7 +26,7 @@ config :tmate, Tmate.Endpoint,
   ]
 
 config :tmate, :master,
-  wsapi_key: "webhookkey"
+  internal_api: [auth_token: "internal_api_auth_token"]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

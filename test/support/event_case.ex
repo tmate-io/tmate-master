@@ -71,14 +71,14 @@ defmodule Tmate.EventCase do
   end
 
   def emit_raw_event(event_type, entity_id, timestamp, generation, params) do
-    {:ok, master_opts} = Application.fetch_env(:tmate, :master)
-    api_key = master_opts[:wsapi_key]
+    auth_token = "internal_api_auth_token"
     payload = Jason.encode!(%{type: event_type, entity_id: entity_id, timestamp: timestamp,
-                              generation: generation, userdata: api_key, params: params})
+                              generation: generation, userdata: auth_token, params: params})
 
     build_conn()
     |> put_req_header("content-type", "application/json")
     |> put_req_header("accept", "application/json")
+    #|> put_req_header("authorization", "Bearer " <> auth_token)
     |> post("/wsapi/webhook", payload)
     |> json_response(200)
   end

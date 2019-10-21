@@ -16,7 +16,7 @@ config :tmate, Tmate.Monitoring.Endpoint,
   enabled: false
 
 config :tmate, :master,
-  wsapi_key: "webhookkey"
+  internal_api: [auth_token: "internal_api_auth_token"]
 
 # Configure your database
 config :tmate, Tmate.Repo,

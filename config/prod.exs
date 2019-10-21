@@ -22,7 +22,7 @@ config :tmate, Tmate.Monitoring.Endpoint,
   port: System.get_env("MASTER_METRICS_PORT", "9100") |> String.to_integer()
 
 config :tmate, :master,
-  wsapi_key: System.get_env("MASTER_WSAPI_KEY")
+  internal_api: [auth_token: System.get_env("INTERNAL_API_AUTH_TOKEN")]
 
 # Do not print debug messages in production
 config :logger, level: :info

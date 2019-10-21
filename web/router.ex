@@ -15,8 +15,11 @@ defmodule Tmate.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :ws_api do
+  pipeline :internal_api do
     plug :accepts, ["json"]
+
+    {:ok, master_options} = Application.fetch_env(:tmate, :master)
+    plug Tmate.PlugVerifyAuthToken, master_options[:internal_api][:auth_token]
   end
 
   scope "/api", Tmate do
@@ -33,9 +36,17 @@ defmodule Tmate.Router do
     post "/signup/validate", SigninController, :validate
   end
 
+  # TODO remove
   scope "/wsapi", Tmate do
-    pipe_through :ws_api
+    pipe_through :internal_api
     post "/webhook", InternalApiController, :webhook
+    get "/session", InternalApiController, :get_session
+  end
+
+  scope "/internal_api", Tmate do
+    pipe_through :internal_api
+    post "/webhook", InternalApiController, :webhook
+    get "/session", InternalApiController, :get_session
   end
 
   scope "/", Tmate do
