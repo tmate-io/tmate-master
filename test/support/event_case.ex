@@ -62,9 +62,8 @@ defmodule Tmate.EventCase do
     {:ok, %{}}
   end
 
-  def emit_event(event) do
+  def emit_event(event, timestamp \\ DateTime.utc_now) do
     {m, params} = Map.split(event, [:event_type, :entity_id, :generation])
-    timestamp = DateTime.utc_now
     generation = m[:generation] || 1
     emit_raw_event(m[:event_type], m[:entity_id], timestamp, generation, params)
     event

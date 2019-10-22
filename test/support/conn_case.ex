@@ -22,6 +22,7 @@ defmodule Tmate.ConnCase do
       import Tmate.Router.Helpers
       # The default endpoint for testing
       @endpoint Tmate.Endpoint
+      import Tmate.ConnCase
     end
   end
 end
