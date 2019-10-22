@@ -18,8 +18,12 @@ defmodule Tmate.Router do
   pipeline :internal_api do
     plug :accepts, ["json"]
 
-    {:ok, master_options} = Application.fetch_env(:tmate, :master)
-    plug Tmate.PlugVerifyAuthToken, master_options[:internal_api][:auth_token]
+    def internal_api_opts do
+      # XXX We can't pass the auth token directly, it is not
+      # necessarily defined at compile time.
+      Application.fetch_env!(:tmate, :master)[:internal_api]
+    end
+    plug Tmate.PlugVerifyAuthToken, &Tmate.Router.internal_api_opts/0
   end
 
   scope "/api", Tmate do
