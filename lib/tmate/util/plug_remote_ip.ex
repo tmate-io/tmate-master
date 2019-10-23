@@ -1,4 +1,4 @@
-defmodule Tmate.PlugRemoteIp do
+defmodule Tmate.Util.PlugRemoteIp do
   require Logger
   @behaviour Plug
 
