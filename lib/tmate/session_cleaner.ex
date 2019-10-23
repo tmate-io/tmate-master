@@ -51,9 +51,7 @@ defmodule Tmate.SessionCleaner do
     # 2) we get the stale entries
     case sid_generations
       |> Map.keys
-      |> get_stale_sessions(base_url) do
-        {:error, reason} ->
-          Logger.error("Cannot get stale sessions on #{base_url} (#{inspect(reason)})")
+      |> Tmate.WsApi.get_stale_sessions(base_url) do
         {:ok, stale_ids} ->
           stale_ids
           |> Enum.map(& {&1, sid_generations[&1]})
@@ -62,31 +60,8 @@ defmodule Tmate.SessionCleaner do
             Logger.warn("Emitting disconnect event for stale session id=#{sid}")
             Event.emit!(:session_disconnect, sid, DateTime.utc_now, generation, %{})
           end)
-    end
-  end
-
-  defp get_stale_sessions(session_ids, base_url) do
-    {:ok, master_options} = Application.fetch_env(:tmate, :master)
-    # TODO change URL to /internal_api/ with other authentication method
-    payload = %{session_ids: session_ids, auth_key: master_options[:internal_api][:auth_token]}
-    case json_post("#{base_url}/master_api/get_stale_sessions", payload) do
-      {:ok, resp} -> {:ok, resp["stale_ids"]}
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
-  # TODO extract this in a module
-  defp json_post(url, payload) do
-    payload = Jason.encode!(payload)
-    headers = [{"Content-Type", "application/json"}, {"Accept", "application/json"}]
-    # We need force_redirect: true, otherwise, post data doesn't get reposted.
-    case HTTPoison.post(url, payload, headers, hackney: [pool: :default, force_redirect: true], follow_redirect: true) do
-      {:ok, %HTTPoison.Response{status_code: status_code, body: body}} when status_code >= 200 and status_code  < 300 ->
-        {:ok, Jason.decode!(body)}
-      {:ok, %HTTPoison.Response{status_code: status_code}} ->
-        {:error, "status=#{status_code}"}
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        {:error, reason}
+        {:error, _} ->
+          nil # error is already logged
     end
   end
 end
