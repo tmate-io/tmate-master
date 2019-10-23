@@ -11,7 +11,7 @@ defmodule Tmate.SessionCleaner do
   end
 
   def prune_sessions({timeout_value, timeout_unit}) do
-    Logger.info("Pruning sessions since #{timeout_value} #{timeout_unit} ago")
+    Logger.info("Pruning dead sessions older than #{timeout_value} #{timeout_unit}")
 
     {n_pruned, sids} = from(s in Session,
               where: s.disconnected_at < ago(^timeout_value, ^timeout_unit),
@@ -19,8 +19,10 @@ defmodule Tmate.SessionCleaner do
     |> Repo.delete_all
 
     if n_pruned != 0 do
-      Logger.info("Pruned #{n_pruned} sessions: #{sids}")
+      Logger.info("Pruned #{n_pruned} dead sessions: #{sids}")
     end
+
+    :ok
   end
 
   def check_for_disconnected_sessions() do
@@ -31,9 +33,11 @@ defmodule Tmate.SessionCleaner do
     |> Enum.group_by(fn {_id, ws_url_fmt} -> ws_url_fmt end,
                      fn {id, _ws_url_fmt} -> id end)
     |> Enum.each(fn {ws_url_fmt, session_ids} ->
-      base_url = Session.ws_api_baseurl(ws_url_fmt)
+      base_url = Session.wsapi_base_url(ws_url_fmt)
       check_for_disconnected_sessions(base_url, session_ids)
     end)
+
+    :ok
   end
 
   defp check_for_disconnected_sessions(base_url, session_ids) do
@@ -50,18 +54,18 @@ defmodule Tmate.SessionCleaner do
 
     # 2) we get the stale entries
     case sid_generations
-      |> Map.keys
-      |> Tmate.WsApi.get_stale_sessions(base_url) do
-        {:ok, stale_ids} ->
-          stale_ids
-          |> Enum.map(& {&1, sid_generations[&1]})
-          |> Enum.each(fn {sid, generation} ->
-    # 3) emit the events for the stale entries
-            Logger.warn("Emitting disconnect event for stale session id=#{sid}")
-            Event.emit!(:session_disconnect, sid, DateTime.utc_now, generation, %{})
-          end)
-        {:error, _} ->
-          nil # error is already logged
+         |> Map.keys
+         |> Tmate.WsApi.get_stale_sessions(base_url) do
+      {:ok, stale_ids} ->
+        stale_ids
+        |> Enum.map(& {&1, sid_generations[&1]})
+        |> Enum.each(fn {sid, generation} ->
+  # 3) emit the events for the stale entries
+          Logger.warn("Emitting disconnect event for stale session id=#{sid}")
+          Event.emit!(:session_disconnect, sid, DateTime.utc_now, generation, %{})
+        end)
+      {:error, _} ->
+        nil # error is already logged
     end
   end
 end

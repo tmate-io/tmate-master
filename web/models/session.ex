@@ -22,12 +22,12 @@ defmodule Tmate.Session do
     |> unique_constraint(:id, name: :sessions_pkey)
   end
 
-  def ws_api_baseurl(ws_url_fmt) do
+  def wsapi_base_url(ws_url_fmt) do
     # e.g., wss://lon1.tmate.io:33/ws/session/%s
     case URI.parse(ws_url_fmt).authority do
-      # dev mode: terrible hack for now
-      "localhost:4001" -> "http://session:4001"
-      host -> "https://#{host}"
+      # dev mode: hardcoding, not great, but it's fine for now
+      "localhost:4001" -> "http://session:4001/internal_api"
+      host -> "https://#{host}/internal_api"
     end
   end
 
