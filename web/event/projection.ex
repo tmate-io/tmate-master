@@ -5,11 +5,11 @@ defmodule Tmate.Event.Projection do
   require __MODULE__.User,    as: User
 
   def handle_event(event_type, id, timestamp, params) when event_type in Session.handled_events do
-    invoke_handler(& Session.handle_event/4, event_type, id, timestamp, params)
+    invoke_handler(&Session.handle_event/4, event_type, id, timestamp, params)
   end
 
   def handle_event(event_type, id, timestamp, params) when event_type in User.handled_events do
-    invoke_handler(& User.handle_event/4, event_type, id, timestamp, params)
+    invoke_handler(&User.handle_event/4, event_type, id, timestamp, params)
   end
 
   def handle_event(event_type, _, _, _) do
