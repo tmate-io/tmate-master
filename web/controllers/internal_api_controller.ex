@@ -27,13 +27,14 @@ defmodule Tmate.InternalApiController do
   end
 
   def get_session(conn, %{"token" => token}) do
-    session = Repo.one(from s in Session, where: s.stoken == ^token or s.stoken_ro == ^token,
-                                          select: %{id: s.id,
-                                                    ssh_cmd_fmt: s.ssh_cmd_fmt,
-                                                    created_at: s.created_at,
-                                                    disconnected_at: s.disconnected_at,
-                                                    closed: s.closed},
-                                          limit: 1)
+    session = Repo.one(from s in Session,
+                       where: s.stoken == ^token or s.stoken_ro == ^token,
+                       select: %{id: s.id,
+                                 ssh_cmd_fmt: s.ssh_cmd_fmt,
+                                 created_at: s.created_at,
+                                 disconnected_at: s.disconnected_at,
+                                 closed: s.closed},
+                       limit: 1)
     if session do
       conn
       |> json(session)
