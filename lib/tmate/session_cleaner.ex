@@ -56,7 +56,7 @@ defmodule Tmate.SessionCleaner do
           stale_ids
           |> Enum.map(& {&1, sid_generations[&1]})
           |> Enum.each(fn {sid, generation} ->
-            # 3) emit the events for the stale entries
+    # 3) emit the events for the stale entries
             Logger.warn("Emitting disconnect event for stale session id=#{sid}")
             Event.emit!(:session_disconnect, sid, DateTime.utc_now, generation, %{})
           end)

@@ -1,6 +1,7 @@
 defmodule Tmate.Util.JsonApi do
   defmacro __using__(opts) do
     quote do
+      import Tmate.Util.JsonApi
       use HTTPoison.Base
       alias HTTPoison.Request
       alias HTTPoison.Response
@@ -68,5 +69,31 @@ defmodule Tmate.Util.JsonApi do
         end
       end
     end
+  end
+
+  def with_atom_keys(obj) do
+    Map.new(obj, fn {k, v} ->
+      v = if is_map(v), do: with_atom_keys(v), else: v
+      {String.to_atom(k), v}
+    end)
+  end
+
+  def as_atom(obj, key) do
+    value = Map.get(obj, key)
+    value = if value, do: String.to_atom(value), else: value
+    Map.put(obj, key, value)
+  end
+
+  def as_timestamp(obj, key) do
+    value = Map.get(obj, key)
+
+    value = if value do
+      {:ok, timestamp, 0} = DateTime.from_iso8601(value)
+      timestamp
+    else
+      value
+    end
+
+    Map.put(obj, key, value)
   end
 end
