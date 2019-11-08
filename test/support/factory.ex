@@ -24,7 +24,6 @@ defmodule Tmate.Factory do
       id: UUID.uuid1,
       ip_address: sequence(:ip, &"1.1.2.#{&1}"),
       type: "ssh",
-      identity: sequence(:pubkey, & Base.encode64("pubkey#{&1}")),
       readonly: false}
   end
 

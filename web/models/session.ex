@@ -4,7 +4,6 @@ defmodule Tmate.Session do
   @primary_key {:id, :binary_id, autogenerate: false}
 
   schema "sessions" do
-    belongs_to :host_identity,      Tmate.Identity
     field      :host_last_ip,       :string
     field      :ws_url_fmt,         :string
     field      :ssh_cmd_fmt,        :string

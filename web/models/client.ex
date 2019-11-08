@@ -8,7 +8,6 @@ defmodule Tmate.Client do
     field :ip_address,    :string
     field :joined_at,     :utc_datetime
     field :readonly,      :boolean
-    belongs_to :identity, Tmate.Identity, references: :id
   end
 
   def changeset(model, params \\ %{}) do
