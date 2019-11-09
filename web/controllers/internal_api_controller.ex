@@ -22,7 +22,6 @@ defmodule Tmate.InternalApiController do
     Tmate.Event.emit!(type, entity_id, timestamp, generation, params)
 
     conn
-    |> put_status(200)
     |> json(%{})
   end
 
@@ -42,6 +41,24 @@ defmodule Tmate.InternalApiController do
       conn
       |> put_status(404)
       |> json(%{error: "not found"})
+    end
+  end
+
+  def get_named_session_tokens(conn, %{"account_key" => account_key,
+                                       "stoken" => stoken, "stoken_ro" => stoken_ro}) do
+    if account_key == "012345678901234567890123456789" do
+      prefix = "hello/"
+      generation = 1
+      stoken    = stoken    && "#{prefix}#{stoken}"
+      stoken_ro = stoken_ro && "#{prefix}#{stoken_ro}"
+
+      result = %{stoken: stoken, stoken_ro: stoken_ro, generation: generation}
+      conn
+      |> json(result)
+    else
+      conn
+      |> put_status(404)
+      |> json(%{error: "Account key not found"})
     end
   end
 end
