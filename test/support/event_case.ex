@@ -77,8 +77,8 @@ defmodule Tmate.EventCase do
     build_conn()
     |> put_req_header("content-type", "application/json")
     |> put_req_header("accept", "application/json")
-    #|> put_req_header("authorization", "Bearer " <> auth_token)
-    |> post("/wsapi/webhook", payload)
+    # |> put_req_header("authorization", "Bearer " <> auth_token)
+    |> post("/internal_api/webhook", payload)
     |> json_response(200)
   end
 end

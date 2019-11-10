@@ -29,22 +29,7 @@ defmodule Tmate.Router do
   scope "/api", Tmate do
     pipe_through :api
 
-    get "/dashboard", DashboardController, :show
     get "/t/:token", SessionController, :show
-
-    scope "/user" do
-      post "/request_identification", UserController, :request_identification
-    end
-
-    post "/signup",          SigninController, :signup
-    post "/signup/validate", SigninController, :validate
-  end
-
-  # TODO remove
-  scope "/wsapi", Tmate do
-    pipe_through :internal_api
-    post "/webhook", InternalApiController, :webhook
-    get "/session", InternalApiController, :get_session
   end
 
   scope "/internal_api", Tmate do
@@ -56,11 +41,6 @@ defmodule Tmate.Router do
   scope "/", Tmate do
     pipe_through :browser
 
-    get "/signin/github/init",     SigninController, :init_github_auth
-    get "/signin/github/callback", SigninController, :github_callback
-    get "/signup",                 SigninController, :signup
-
-    get "/dashboard", PageController, :show
     get "/t/:token", PageController, :show
 
     get "/", StaticPageController, :home
