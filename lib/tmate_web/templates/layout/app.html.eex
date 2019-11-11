@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+    <title>tmate</title>
+    <style>
+      body { background-color: #272B30; color: #C8C8C8; }
+      body > #app-container > p.loading { margin: auto; margin-top: 100px; width: 200px; text-align: center; }
+    </style>
+  </head>
+
+  <body>
+    <div id="app-container"><%= render @view_module, @view_template, assigns %></div>
+    <script src="<%= Routes.static_url(@conn, "/js/index.js") %>"></script>
+
+    <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-41775490-1', 'tmate.io');ga('send', 'pageview');</script>
+  </body>
+</html>

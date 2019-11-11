@@ -17,7 +17,7 @@ defmodule Tmate.EventCase do
   using do
     quote do
       alias Tmate.Repo
-      import Ecto.Query, only: [from: 2]
+      import Ecto.Query
       import Tmate.EventCase
       import Tmate.Factory
     end

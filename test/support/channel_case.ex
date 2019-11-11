@@ -1,11 +1,11 @@
-defmodule Tmate.ChannelCase do
+defmodule TmateWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
 
   Such tests rely on `Phoenix.ChannelTest` and also
-  imports other functionality to make it easier
-  to build and query models.
+  import other functionality to make it easier
+  to build common data structures and query the data layer.
 
   Finally, if the test case interacts with the database,
   it cannot be async. For this reason, every test runs
@@ -19,8 +19,19 @@ defmodule Tmate.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
+
       # The default endpoint for testing
-      @endpoint Tmate.Endpoint
+      @endpoint TmateWeb.Endpoint
     end
+  end
+
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Tmate.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Tmate.Repo, {:shared, self()})
+    end
+
+    :ok
   end
 end

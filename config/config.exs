@@ -3,46 +3,39 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
+
+# General application configuration
 use Mix.Config
 
-# Configures the endpoint
-config :tmate, Tmate.Endpoint,
-  url: [host: "localhost"],
-  root: ".",
-  render_errors: [accepts: ~w(html json)],
-  pubsub: [name: Tmate.PubSub,
-           adapter: Phoenix.PubSub.PG2],
-  instrumenters: [Tmate.Endpoint.PhoenixInstrumenter]
+config :tmate,
+  ecto_repos: [Tmate.Repo]
 
-config :tmate, ecto_repos: [Tmate.Repo]
+# Configures the endpoint
+config :tmate, TmateWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "DKaayGHtzQJFsdBK4HfamYXCdSd4aOLV7T5+XY+9XzIKuoUWYwMhJH+/U2N/7zkf",
+  render_errors: [view: TmateWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Tmate.PubSub, adapter: Phoenix.PubSub.PG2]
+
+# Configures Elixir's Logger
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
+
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
+
 
 config :tmate, Tmate.Monitoring.Endpoint,
   enabled: true,
   cowboy_opts: [port: 9100]
+
 config :prometheus, Tmate.PlugExporter,
   path: "/metrics",
   format: :auto,
   registry: :default,
   auth: false
 
-
-config :logger,
-  backends: [:console]
-
-# Configures Elixir's Logger
-config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:remote_ip]
-
-# Configure phoenix generators
-config :phoenix, :generators,
-  migration: true,
-  binary_id: false
-
-config :phoenix, :json_library, Jason
-
-config :tmate, :redis,
-  pool_size: 2,
-  pool_max_overflow: 2
-
-import_config "#{Mix.env}.exs"
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env()}.exs"
