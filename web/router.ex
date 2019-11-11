@@ -36,7 +36,7 @@ defmodule Tmate.Router do
     pipe_through :internal_api
     post "/webhook", InternalApiController, :webhook
     get "/session", InternalApiController, :get_session
-    post "/named_session_tokens", InternalApiController, :get_named_session_tokens
+    get "/named_session_prefix", InternalApiController, :get_named_session_prefix
   end
 
   scope "/", Tmate do

@@ -1,6 +1,7 @@
 defmodule Tmate.InternalApiController do
   use Tmate.Web, :controller
   alias Tmate.Session
+  alias Tmate.User
   require Logger
 
   alias Tmate.Util.JsonApi
@@ -44,21 +45,17 @@ defmodule Tmate.InternalApiController do
     end
   end
 
-  def get_named_session_tokens(conn, %{"account_key" => account_key,
-                                       "stoken" => stoken, "stoken_ro" => stoken_ro}) do
-    if account_key == "012345678901234567890123456789" do
-      prefix = "hello/"
-      generation = 1
-      stoken    = stoken    && "#{prefix}#{stoken}"
-      stoken_ro = stoken_ro && "#{prefix}#{stoken_ro}"
-
-      result = %{stoken: stoken, stoken_ro: stoken_ro, generation: generation}
+  def get_named_session_prefix(conn, %{"api_key" => api_key}) do
+    user = User.get_by_api_key(api_key)
+    if user do
+      prefix = "#{user.username}/"
+      result = %{prefix: prefix}
       conn
       |> json(result)
     else
       conn
       |> put_status(404)
-      |> json(%{error: "Account key not found"})
+      |> json(%{error: "api key not found"})
     end
   end
 end
