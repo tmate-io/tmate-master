@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :tmate, Tmate.Repo,
-  # username: "postgres",
-  # password: "postgres",
+  username: "postgres",
+  password: "postgres",
   database: "tmate_dev",
   hostname: "postgres",
   show_sensitive_data_on_connection_error: true,

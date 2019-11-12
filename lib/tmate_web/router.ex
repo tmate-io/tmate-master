@@ -23,7 +23,7 @@ defmodule TmateWeb.Router do
       # necessarily defined at compile time.
       Application.fetch_env!(:tmate, :master)[:internal_api]
     end
-    plug Tmate.Util.PlugVerifyAuthToken, fn_opts: &Tmate.Router.internal_api_opts/0
+    plug Tmate.Util.PlugVerifyAuthToken, fn_opts: &__MODULE__.internal_api_opts/0
   end
 
   scope "/api", TmateWeb do

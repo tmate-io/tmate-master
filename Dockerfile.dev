@@ -14,10 +14,10 @@ ENV MIX_ENV ${MIX_ENV}
 RUN mix deps.get
 RUN mix deps.compile
 
+COPY assets assets
 COPY config config
 COPY lib lib
 COPY priv priv
-COPY web web
 
 RUN mix compile
 

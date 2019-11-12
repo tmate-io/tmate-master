@@ -67,7 +67,7 @@ defmodule Tmate.Event do
   def emit!(event_type, entity_id, timestamp, params) do
     timestamp = DateTime.truncate(timestamp, :second)
     event_params = %{type: Atom.to_string(event_type), entity_id: entity_id,
-                     timestamp: timestamp, generation: stored_generation, params: params}
+                     timestamp: timestamp, generation: nil, params: params}
     Repo.transaction fn ->
       Event.changeset(%Event{}, event_params) |> Repo.insert!
       Tmate.EventProjections.handle_event(event_type, entity_id, timestamp, params)

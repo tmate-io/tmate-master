@@ -27,7 +27,7 @@ defmodule Tmate.EventCase do
   # Import conveniences for testing with connections
   use Phoenix.ConnTest
   # The default endpoint for testing
-  @endpoint Tmate.Endpoint
+  @endpoint TmateWeb.Endpoint
 
   @doc """
   Helper for returning list of errors in model when passed certain data.
@@ -55,10 +55,13 @@ defmodule Tmate.EventCase do
     model.__struct__.changeset(model, data).errors
   end
 
-  setup do
+  setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Tmate.Repo)
-    # {:ok, pid} = Tmate.Websocket.Endpoint.start_link
-    # :ok = Ecto.Adapters.SQL.Sandbox.allow(Tmate.Repo, self(), self())
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Tmate.Repo, {:shared, self()})
+    end
+
     {:ok, %{}}
   end
 

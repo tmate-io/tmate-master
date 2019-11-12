@@ -17,6 +17,23 @@ defmodule TmateWeb.SignUpController do
   end
 
   def create(conn, %{"user"=> user_params}) do
+
+  #  if email found:
+  #          if not verified:
+  #                  delete previous
+  #                  create record
+  #          if verified:
+  #                  send old credentials
+  #
+  #  if username found:
+  #          if not verified:
+  #                  delete previous
+  #                  create record
+  #          if verified:
+  #                  Error: username taken
+  #
+  #  send creds
+
     user_id = UUID.uuid1()
     %{"email" => email} = user_params
     changeset = User.changeset(%User{id: user_id}, user_params)

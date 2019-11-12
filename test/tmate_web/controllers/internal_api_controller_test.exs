@@ -1,6 +1,6 @@
-defmodule Tmate.InternalApiControllerTest do
-  use Tmate.ConnCase
-  use Tmate.EventCase
+defmodule TmateWeb.InternalApiControllerTest do
+  use TmateWeb.ConnCase
+  import Tmate.EventCase
 
   test "webhook" do
     # test authentication

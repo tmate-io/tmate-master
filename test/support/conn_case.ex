@@ -21,6 +21,7 @@ defmodule TmateWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      import Tmate.Factory
       alias TmateWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing

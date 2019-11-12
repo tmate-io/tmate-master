@@ -13,8 +13,8 @@ ENV MIX_ENV prod
 RUN mix deps.get
 RUN mix deps.compile
 
+COPY assets assets
 COPY lib lib
-COPY web web
 COPY test test
 COPY config config
 COPY priv priv
