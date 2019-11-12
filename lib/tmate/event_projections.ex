@@ -1,22 +1,19 @@
 defmodule Tmate.EventProjections do
   require Logger
 
-  require __MODULE__.Session, as: Session
-  require __MODULE__.User,    as: User
+  @handlers [
+    &__MODULE__.Session.handle_event/4,
+    &__MODULE__.User.handle_event/4,
+  ]
 
-  def handle_event(event_type, id, timestamp, params) when event_type in Session.handled_events do
-    invoke_handler(&Session.handle_event/4, event_type, id, timestamp, params)
-  end
-
-  def handle_event(event_type, id, timestamp, params) when event_type in User.handled_events do
-    invoke_handler(&User.handle_event/4, event_type, id, timestamp, params)
-  end
-
-  def handle_event(event_type, _, _, _) do
-    Logger.warn("No projection for event #{event_type}")
+  def handle_event(event_type, id, timestamp, params) do
+    @handlers |> Enum.each(fn handler ->
+      invoke_handler(handler, event_type, id, timestamp, params)
+    end)
   end
 
   defp invoke_handler(func, event_type, id, timestamp, params) do
+    # TODO raise after invoking all handlers
     try do
       func.(event_type, id, timestamp, params)
     catch

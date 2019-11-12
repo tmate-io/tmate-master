@@ -8,20 +8,11 @@ defmodule Tmate.EventProjections.Session do
 
   import Ecto.Query
 
-  defmacro handled_events do
-    [:session_register, :session_open, :session_close, :session_disconnect,
-     :session_join, :session_left]
-  end
-
   defp close_session_clients(session_id) do
     from(c in Client, where: c.session_id == ^session_id) |> Repo.delete_all()
   end
 
-  def handle_event(:session_register, id, timestamp, params) do
-    handle_event(:session_open, id, timestamp, params)
-  end
-
-  def handle_event(:session_open, id, timestamp,
+  def handle_event(:session_register, id, timestamp,
                    %{ip_address: ip_address,
                      ws_url_fmt: ws_url_fmt, ssh_cmd_fmt: ssh_cmd_fmt,
                      stoken: stoken, stoken_ro: stoken_ro,
@@ -85,5 +76,8 @@ defmodule Tmate.EventProjections.Session do
 
     # The session_left can be duplicated. So we allow the record to be absent.
     %Client{id: cid} |> Repo.delete(stale_error_field: :_stale_)
+  end
+
+  def handle_event(_, _, _, _) do
   end
 end

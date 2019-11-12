@@ -42,6 +42,9 @@ defmodule TmateWeb.Router do
   scope "/", TmateWeb do
     pipe_through :browser
 
+    get "/register", SignUpController, :new
+    post "/register", SignUpController, :create
+
     get "/t/:token", PageController, :show
 
     get "/", StaticPageController, :home

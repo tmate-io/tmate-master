@@ -6,6 +6,8 @@ defmodule Tmate.User do
   alias Tmate.Repo
   alias Tmate.User
 
+  require Logger
+
   @primary_key {:id, :binary_id, autogenerate: false}
 
   schema "users" do
@@ -15,6 +17,7 @@ defmodule Tmate.User do
     field :verified,     :boolean
     field :created_at,   :utc_datetime
     field :last_seen_at, :utc_datetime
+    field :allow_mailing_list, :boolean
   end
 
   def get_by_api_key(api_key) do
@@ -23,7 +26,42 @@ defmodule Tmate.User do
     user
   end
 
-  defmodule CreateUtil do
+  def get_by_username!(username) do
+    Repo.get_by!(User, username: username)
+  end
+
+  def repr(user) do
+    "#{user.username} (#{user.email})"
+  end
+
+  def seen!(user, timestamp) do
+    Logger.info("#{User.repr(user)} seen")
+
+    user
+    |> put_change(:verified, true)
+    |> put_change(:created_at, timestamp)
+    |> User.changeset()
+    |> Repo.update!
+  end
+
+  def changeset(model, params \\ %{}) do
+    model
+    |> cast(params, [:username, :email, :api_key, :allow_mailing_list])
+    |> validate_required(:username)
+    |> validate_length(:username, min: 1, max: 40)
+    |> validate_format(:username, ~r/^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9]))*$/,
+           message: "Username may only contain alphanumeric characters or single hyphens"
+                     <> ", and cannot begin or end with a hyphen.")
+    |> validate_required(:email)
+    |> validate_format(:email, ~r/.@.*\.../, message: "Check your email")
+    |> gen_api_key_if_empty()
+    |> unique_constraint(:id, name: :users_pkey)
+    |> unique_constraint(:username)
+    |> unique_constraint(:email)
+    |> unique_constraint(:api_key)
+  end
+
+  defmodule ApiKeyUtil do
     @api_key_letters "abcdefghjklmnopqrstuvwxyz" <>
                      "ABCDEFGHJKLMNOPQRSTUVWXYZ" <>
                      "0123456789"
@@ -47,25 +85,10 @@ defmodule Tmate.User do
     end
   end
 
-  def create(username, email) do
-    api_key = CreateUtil.gen_api_key()
-
-    %User{}
-    |> changeset(%{username: username, email: email, api_key: api_key})
-    |> Repo.insert
-  end
-
-  def changeset(model, params) do
-    model
-    |> cast(params, [:username, :email, :api_key])
-    |> validate_length(:username, min: 1, max: 40)
-    |> validate_format(:username, ~r/^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9]))*$/,
-           message: "Username may only contain alphanumeric characters or single hyphens"
-                     <> ", and cannot begin or end with a hyphen.")
-    |> validate_format(:email, ~r/.@.*\.../)
-    |> unique_constraint(:id, name: :users_pkey)
-    |> unique_constraint(:username)
-    |> unique_constraint(:email)
-    |> unique_constraint(:api_key)
+  defp gen_api_key_if_empty(changeset) do
+    case get_change(changeset, :api_key) do
+      nil -> put_change(changeset, :api_key, ApiKeyUtil.gen_api_key())
+      _ -> changeset
+    end
   end
 end

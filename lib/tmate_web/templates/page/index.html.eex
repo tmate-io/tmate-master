@@ -3,3 +3,5 @@
 <p class="loading">
   Loading...
 </p>
+
+<script src="<%= Routes.static_url(@conn, "/js/index.js") %>"></script>

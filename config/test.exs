@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :tmate, Tmate.Repo,
-  username: "postgres",
-  password: "postgres",
+  # username: "postgres",
+  # password: "postgres",
   database: "tmate_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

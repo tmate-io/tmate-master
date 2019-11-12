@@ -49,18 +49,25 @@ defmodule Tmate.Event do
       # 2. Process the event
       Tmate.EventProjections.handle_event(event_type, entity_id, timestamp, params)
 
-      # 3. Check if the event is from the latest generation
-      #
-      # TODO This is racy. There's a window for an old generation event
-      # to get committed after a new generation event.
-      # We would need a lock around the max_generation read and the commit
-      # Also, this can get bad performance-wise.
-      max_generation = Repo.one(from e in Event, where: e.entity_id == ^entity_id,
-                                select: max(e.generation)) || 1
-      if (generation < max_generation) do
-        Logger.info("Discarding stale event (:#{event_type})")
-        Repo.rollback(:stale)
+      if generation do
+        # 3. Check if the event is from the latest generation
+        #
+        # TODO This is racy. There's a window for an old generation event
+        # to get committed after a new generation event.
+        # We would need a lock around the max_generation read and the commit
+        # Also, this can get bad performance-wise.
+        max_generation = Repo.one(from e in Event, where: e.entity_id == ^entity_id,
+                                  select: max(e.generation)) || 1
+        if (generation < max_generation) do
+          Logger.info("Discarding stale event (:#{event_type})")
+          Repo.rollback(:stale)
+        end
       end
     end
+  end
+
+  def emit!(event_type, entity_id, params) do
+    now = DateTime.utc_now
+    emit!(event_type, entity_id, now, nil, params)
   end
 end

@@ -165,3 +165,27 @@ p.fig-label {
 .social-buttons .github {
   display: inline;
 }
+
+.alert-success {
+  color: #fff;
+  background-color: #00ac7c;
+  border-color: #00ac7c;
+  text-shadow: none;
+}
+
+.user-registration h3 {
+  text-align: center; margin: 1em
+}
+
+.user-registration input {
+  color: #333;
+  background-color: #d3d3d3;
+}
+
+.user-registration .help-block {
+  color: #d88;
+}
+
+.user-registration button {
+  margin-top: 0.5em;
+}

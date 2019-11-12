@@ -1,0 +1,43 @@
+<%= if @flash_info do %>
+  <div class="row">
+
+    <div class="user-registration span6 offset3">
+      <h3>Registration</h3>
+
+      <div class="alert alert-success">
+        <%= @flash_info %>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+
+  <div class="row">
+    <div class="user-registration span4 offset4">
+      <h3>API key registration</h3>
+      <%= form_for @changeset, Routes.sign_up_path(@conn, :create), fn f -> %>
+        <div class="form-group">
+          <%= label f, :username, "Username" %>
+          <%= text_input f, :username, class: "span4" %>
+          <%= error_tag f, :username %>
+        </div>
+
+        <div class="form-group">
+          <%= label f, :email, "Email" %>
+          <%= text_input f, :email, type: "email", class: "span4"  %>
+          <%= error_tag f, :email %>
+        </div>
+
+        <label class="checkbox">
+          <%= checkbox f, :allow_mailing_list %>
+          Receive news related to tmate, at most once per quarter.
+        </label>
+
+        <div class="btn-group pull-right">
+          <button type="submit" class="btn btn-default btn-primary">Email API key</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+<% end %>
