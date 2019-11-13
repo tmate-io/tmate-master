@@ -1,7 +1,9 @@
 defmodule Tmate.EventProjections.User do
   alias Tmate.Util.EctoHelpers
   alias Tmate.User
+  alias Tmate.Repo
   import Ecto.Changeset
+  require Logger
 
   def handle_event(:user_create, user_id, timestamp, params) do
     %User{id: user_id}
@@ -11,18 +13,28 @@ defmodule Tmate.EventProjections.User do
     |> EctoHelpers.get_or_insert!
   end
 
+  def handle_event(:expire_user, user_id, _timestamp, _params) do
+    %User{id: user_id} |> Repo.delete(stale_error_field: :_stale_)
+  end
+
   def handle_event(:session_register, _sid, timestamp,
                    %{stoken: stoken, stoken_ro: stoken_ro}) do
-    get_username = fn token ->
+    get_username_from = fn token ->
       case String.split(token, "/") do
-        [username, _rest] -> username
+        [username, _session_name] -> username
         _ -> nil
       end
     end
 
-    username = get_username.(stoken) || get_username.(stoken_ro)
-    if (username) do
-      User.get_by_username!(username) |> User.seen!(timestamp)
+    username = get_username_from.(stoken) || get_username_from.(stoken_ro)
+    cond do
+      username == nil -> nil
+      user = Repo.get_by(User, username: username) ->
+        user
+        |> User.seen(timestamp)
+        |> Repo.update()
+      true ->
+        Logger.warn("Username not found: #{username}")
     end
   end
 

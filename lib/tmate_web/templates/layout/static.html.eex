@@ -9,7 +9,7 @@
     <link rel="stylesheet" media="screen" href="/css/bootstrap.min.css">
     <link rel="stylesheet" media="screen" href="/css/main.css">
 
-    <title>tmate • Instant terminal sharing</title>
+    <title><%= @view_module.title(@view_template, assigns) %></title>
 
     <style>
       body { background-color: #272B30; color: #C8C8C8; }

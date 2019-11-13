@@ -26,27 +26,20 @@ defmodule Tmate.User do
     user
   end
 
-  def get_by_username!(username) do
-    Repo.get_by!(User, username: username)
-  end
-
   def repr(user) do
     "#{user.username} (#{user.email})"
   end
 
-  def seen!(user, timestamp) do
+  def seen(user, timestamp) do
     Logger.info("#{User.repr(user)} seen")
 
     user
-    |> put_change(:verified, true)
-    |> put_change(:created_at, timestamp)
-    |> User.changeset()
-    |> Repo.update!
+    |> change(%{verified: true, last_seen_at: timestamp})
   end
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:username, :email, :api_key, :allow_mailing_list])
+    |> cast(params, [:username, :email, :allow_mailing_list])
     |> validate_required(:username)
     |> validate_length(:username, min: 1, max: 40)
     |> validate_format(:username, ~r/^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9]))*$/,
