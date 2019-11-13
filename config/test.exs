@@ -27,3 +27,6 @@ config :tmate, :master,
 
 config :tmate, Tmate.Scheduler,
   enabled: false
+
+config :tmate, Tmate.Mailer,
+  adapter: Bamboo.TestAdapter

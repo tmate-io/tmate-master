@@ -1,7 +1,7 @@
 FROM elixir:1.9-alpine AS build
 
 RUN mix local.hex --force && mix local.rebar --force
-RUN apk --no-cache add git
+RUN apk --no-cache add git npm
 
 WORKDIR /build
 
@@ -13,11 +13,16 @@ ENV MIX_ENV prod
 RUN mix deps.get
 RUN mix deps.compile
 
+COPY assets/package-lock.json assets/package-lock.json
+COPY assets/package.json assets/package.json
+RUN cd assets && npm install
+
 COPY assets assets
 COPY lib lib
 COPY test test
 COPY config config
-COPY priv priv
+COPY priv/gettext priv/gettext
+COPY priv/repo priv/repo
 COPY rel rel
 
 ENV HOSTNAME "master-0"

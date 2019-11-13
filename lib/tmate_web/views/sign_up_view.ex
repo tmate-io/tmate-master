@@ -1,7 +1,7 @@
 defmodule TmateWeb.SignUpView do
   use TmateWeb, :view
 
-  def title("new.html", _assigns) do
-    "tmate • API key registration"
+  def title("home.html", _assigns) do
+    "tmate • Instant terminal sharing"
   end
 end

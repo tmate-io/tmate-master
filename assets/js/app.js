@@ -15,3 +15,7 @@ import "phoenix_html"
 //
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
+
+
+
+/* All the js is in the assets/static/js folder */

@@ -42,12 +42,15 @@ defmodule TmateWeb.Router do
   scope "/", TmateWeb do
     pipe_through :browser
 
-    get "/register", SignUpController, :new
-    post "/register", SignUpController, :create
-
     get "/t/:token", PageController, :show
 
-    get "/", StaticPageController, :home
+    get "/", SignUpController, :new
+    post "/", SignUpController, :create
     # get "/*path", PageController, :show
+  end
+
+  if Mix.env == :dev do
+    # If using Phoenix
+    forward "/sent_emails", Bamboo.SentEmailViewerPlug
   end
 end

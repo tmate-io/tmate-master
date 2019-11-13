@@ -53,6 +53,7 @@ defmodule Tmate.MixProject do
       {:quantum, "~> 2.3"},
       {:timex, "~> 3.0"},
       {:httpoison, ">= 0.0.0"},
+      {:bamboo, "~> 1.3"},
     ]
   end
 

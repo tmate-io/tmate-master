@@ -61,3 +61,6 @@ config :tmate, Tmate.Scheduler,
     {"*/5 * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
     {"*/5 * * * *", {Tmate.SessionCleaner, :prune_sessions, []}},
   ]
+
+config :tmate, Tmate.Mailer,
+  adapter: Bamboo.LocalAdapter

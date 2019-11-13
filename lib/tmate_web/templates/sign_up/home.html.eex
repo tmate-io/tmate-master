@@ -1,0 +1,546 @@
+<a href="https://github.com/tmate-io/tmate">
+  <img style="position: absolute; top: 0; right:0; border: 0; width: 149px; height: 149px;" src="/img/fork-me-on-github-right-orange@2x.png" alt="Fork me on GitHub">
+</a>
+
+<div class="row">
+  <div class="span10 offset1">
+    <div class="hero-unit">
+      <h1>tmate</h1>
+      <h2>Instant terminal sharing</h2>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span6 "><div class="video linux"></div></div>
+  <div class="span6"><div class="video macos"></div></div>
+</div>
+<div class="row">
+  <div class="span12">
+    <div class="steps">
+      <h3 class="launch">Launch</h3>
+      <h3 class="share">Share</h3>
+      <h3 class="pair">Pair</h3>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2 id="installation">Installation</h2>
+    <p>
+      tmate is a fork of <a href="https://tmux.github.io/">tmux</a>.
+      tmate and tmux can coexist on the same system.
+    </p>
+    <div class="tabbable">
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#macos">macOS</a></li>
+        <li><a data-toggle="tab" href="#ubuntu">Ubuntu</a></li>
+        <li><a data-toggle="tab" href="#fedora">Fedora</a></li>
+        <li><a data-toggle="tab" href="#opensuse">openSUSE</a></li>
+        <li><a data-toggle="tab" href="#freebsd">FreeBSD</a></li>
+        <li><a data-toggle="tab" href="#openbsd">OpenBSD</a></li>
+        <li><a data-toggle="tab" href="#gentoo">Gentoo</a></li>
+        <li><a data-toggle="tab" href="#arch">ArchLinux</a></li>
+        <li><a data-toggle="tab" href="#static">Static Builds</a></li>
+        <li><a data-toggle="tab" href="#source">Source</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="macos">
+          <pre>brew install tmate</pre>
+          <p>Note: <a href="https://brew.sh/">Homebrew</a> is required as a prerequisite.</p>
+        </div>
+        <div class="tab-pane" id="ubuntu">
+          <pre>sudo apt-get install tmate</pre>
+        </div>
+        <div class="tab-pane" id="fedora">
+          <pre>sudo dnf install tmate</pre>
+          <p>The Fedora packages are maintained by <a href="https://admin.fedoraproject.org/pkgdb/packager/asn/">Andreas Schneider</a>.</p>
+        </div>
+        <div class="tab-pane" id="opensuse">
+          <pre>sudo zypper install tmate</pre>
+          <p><a href="https://software.opensuse.org/package/tmate">Package</a> available on openSUSE Tumbleweed and Leap. On SUSE Linux Enterprise, you need to <a href="https://packagehub.suse.com/#use">activate the Package Hub</a> Extension first.</p>
+        </div>
+        <div class="tab-pane" id="freebsd">
+          <pre>pkg install tmate</pre>
+          <p>The FreeBSD packages are maintained by <a href="https://github.com/swills">Steve Wills</a>.</p>
+        </div>
+        <div class="tab-pane" id="openbsd">
+          <pre>pkg_add tmate</pre>
+          <p>The OpenBSD packages are maintained by <a href="https://github.com/wesley974">Wesley Mouedine Assaby</a>.</p>
+        </div>
+        <div class="tab-pane" id="gentoo">
+          <pre>emerge -a app-misc/tmate</pre>
+          <p>Package information: <a href="https://packages.gentoo.org/packages/app-misc/tmate">https://packages.gentoo.org/packages/app-misc/tmate</a>.</p>
+        </div>
+        <div class="tab-pane" id="arch">
+          <pre>pacman -S tmate</pre>
+          <p>The ArchLinux package is maintained by <a href="https://github.com/eworm-de">Christian Hesse</a>.</p>
+        </div>
+        <div class="tab-pane" id="static">
+          <p>We provide i386, x86_64, arm32v6, arm32v7, and arm64v8 linux static builds for convenience.</p>
+          <p>Binaries can be found on the
+          <a href="https://github.com/tmate-io/tmate/releases/latest">GitHub release page</a>.
+          The binaries are built using the <code>build_static_release.sh</code> script in the
+          tmate source directory.
+          </p>
+
+        </div>
+        <div class="tab-pane" id="source">
+          <p>Sources are on GitHub: <a href="https://github.com/nviennot/tmate">https://github.com/tmate-io/tmate</a></p>
+          <p>Download, compile, and install with the following steps:</p>
+          <pre>
+git clone https://github.com/tmate-io/tmate.git
+cd tmate
+./autogen.sh
+./configure
+make
+make install</pre>
+          <p>
+            A few dependencies are required. The Ubuntu package names are:<br />
+            git-core build-essential pkg-config libtool libevent-dev libncurses-dev zlib1g-dev automake libssh-dev libmsgpack-dev
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2 id="usage">Usage</h2>
+    <ul>
+      <li>
+        <p>
+        Once installed, launch tmate with <code>tmate</code>.
+        You should see something like <code>ssh PMhmes4XeKQyBR2JtvnQt6BJw@nyc1.tmate.io</code>
+        appearing. This allow others to join your terminal session.
+        All users see the same terminal content at all time.
+        This is useful for pair programming
+        where two people share the same screen, but have different keyboards.
+        </p>
+      </li>
+      <li>
+        <p>
+        tmate is useful as it goes through NATs and tolerate host IP changes.
+        Accessing a terminal session is transparent to clients as they go
+        through the tmate.io servers, acting as a proxy.
+        No authentication setup is required, like setting up ssh keys.
+        </p>
+      </li>
+      <li>
+        <p>
+        Run <code>tmate show-messages</code> in your shell to see tmate's log
+        messages, including the ssh connection string.
+        </p>
+      </li>
+      <li>
+        <p>
+        tmate also allow you to share a read-only view of your terminal.
+        The read-only connection string can be retrieved with <code>tmate show-messages</code>.
+        </p>
+      </li>
+      <li>
+        <p>
+        tmate uses <code>~/.tmate.conf</code> as configuration file. It uses the same tmux syntax.
+        In order to load the <code>~/.tmux.conf</code> configuration file,
+        add <code>source-file ~/.tmux.conf</code> in the tmate configuration file.
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2 id="remote_access">Remote access</h2>
+    <p>
+    When tmate is used for remote access only (as opposed to pair programming),
+    it is useful to launch tmate in foreground mode with <code>tmate -F</code>.
+    This does two things:
+    </p>
+    <ul>
+      <li>
+        <p>It only starts the server side of tmate and outputs its log on stdout
+        (as opposed to showing the session shell, useful for pair programming).
+        This makes it easy to integrate into a service manager like systemd or kubernetes.
+        </p>
+      </li>
+      <li>
+        <p>It ensure the session never dies, by respawning a shell when it exits.
+        </p>
+      </li>
+    </ul>
+
+    <p>
+    If you wish to specify the program to run as a shell,
+    run <code>tmate -F new-session [command...]</code>.
+    For example, to have a rails console (it's a popular web framework)
+    accessible with a named session (see next section), one can run:
+    </p>
+    <pre>tmate -F -n web new-session rails console</pre>
+
+    <p>You can think of tmate as a reverse ssh tunnel accessible from anywhere.</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2 id="named_sessions">Named sessions</h2>
+    <p>
+    Typically, tmate generates random connection strings which are not stable across restarts,
+    like <code>ssh vbBK63dtemNN2ppDUqSvYNqbD@nyc1.tmate.io</code>.
+    This can be a problem for accessing remote machines.
+    One way to deal with connection string instability is to use
+    <a href="https://github.com/tmate-io/tmate/wiki/Webhooks">tmate Webhooks</a>,
+    but this requires some effort to integrate.
+    </p>
+
+    <p>
+    Another way is to use named sessions: by specifying a session name, the connection string becomes
+    <code>ssh username/session-name@nyc1.tmate.io</code> which is deterministic.
+    The username is specified when registering for an API key (see below) and
+    the session name is specified as follows:
+    </p>
+
+    <ul>
+      <li>
+        <p>From the CLI:</p>
+<pre>
+tmate -k API_KEY -n session-name</pre>
+      </li>
+
+      <li>
+        <p>Or from the <code>~/.tmate.conf</code> file:</p>
+<pre>
+set tmate-api-key "API_KEY"
+set tmate-session-name "session-name"</pre>
+      </li>
+    </ul>
+
+    <p>
+    It is possible put the API key in the tmate configuration file,
+    and specify the session name on the CLI.
+    </p>
+
+    <p>
+    To specify the read-only session name, you may use the CLI option <code>-r</code>, or
+    the configuration option <code>tmate-session-name-ro</code>.
+    </p>
+
+    <p>
+    If you get <code>illegal option -- n</code>, ensure you are
+    running tmate greater than <b>2.4.0</b>.
+    You can check what tmate version you have by running: <code>tmate -V</code>.
+    If your tmate version is too old, scroll up to the installation section.
+    </p>
+
+    <p>
+    <b class="warning">Warning: access control must be considered when using named sessions, see next section.</b>
+    </p>
+
+    <p>
+    Fill the following form to get an API key and start naming your sessions
+    </p>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="user-registration span6 offset3">
+    <h3 id="api_key">API key registration</h3>
+    <hr />
+
+    <%= if @flash_info do %>
+      <div class="alert alert-success">
+        <%= @flash_info %>
+      </div>
+    <% end %>
+
+    <%= form_for @changeset, "#{Routes.sign_up_path(@conn, :create)}#api_key", fn f -> %>
+    <div class="form-group">
+      <%= label f, :username, "Username" %>
+      <%= text_input f, :username, class: "span6" %>
+      <%= error_tag f, :username %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :email, "Email" %>
+      <%= text_input f, :email, type: "email", class: "span6" %>
+      <%= error_tag f, :email %>
+    </div>
+
+    <label class="checkbox">
+      <%= checkbox f, :allow_mailing_list %>
+      Subscribe to tmate newsletter, at most once per quarter
+    </label>
+
+    <div class="btn-group">
+      <button type="submit" class="btn btn-default btn-primary">Email API key</button>
+    </div>
+  <% end %>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2 id="access_control">Access control</h2>
+    <p>
+    When using named sessions, access control is a concern as session
+    names can be easy to guess if one is not careful. There are two ways to do access control:</p>
+
+    <ul>
+      <li>
+        <p>
+        Use hard to guess session names. For example <i>machine1-3V6txGYUgglA</i>.
+        This makes the session name hard to guess, like a password.
+        </p>
+      </li>
+      <li>
+        <p>
+        Only allow SSH clients with specific public keys to connect to the session.
+        To do so, create an <code>authorized_keys</code> file containing public keys that
+        are allowed to connect. In this example, we'll reuse the one sshd uses,
+        namely <code>~/.ssh/authorized_keys</code>. Then, specify the authorized
+        keys file via the tmate CLI using <code>-a</code>as such:
+        </p>
+        <pre>tmate -a ~/.ssh/authorized_keys</pre>
+
+        <p>
+        The authorized keys file can also be specified in the <code>~/.tmate.conf</code>
+        configuration file with:
+        </p>
+        <pre>set tmate-authorized-keys "~/.ssh/authorized_keys"</pre>
+      </li>
+      Note that specifying an authorized keys file will disable web access.
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2 id="host">Host your own tmate servers</h2>
+
+    <p>You can use the following docker image
+      <a href="https://hub.docker.com/r/tmate/tmate-ssh-server">tmate/tmate-ssh-server</a>.
+      Note that you will need to create SSH keys using <code>create_keys.sh</code>(see below).
+    </p>
+
+    <p>
+      Alternatively, you can compile the ssh server from source located at
+      <a href="https://github.com/tmate-io/tmate-ssh-server">https://github.com/tmate-io/tmate-ssh-server</a>.
+    </p>
+    <p>
+      tmate also depends on a couple of packages. On Ubuntu, the packages are:<br />
+      git-core build-essential pkg-config libtool libevent-dev libncurses-dev zlib1g-dev automake libssh-dev cmake ruby
+    </p>
+    <p>Once all the prerequisites are satisfied, you can install tmate-ssh-server with:</p>
+    <pre>
+git clone https://github.com/tmate-io/tmate-ssh-server.git &amp;&amp; cd tmate-ssh-server
+./create_keys.sh # This generates SSH keys
+./autogen.sh &amp;&amp; ./configure &amp;&amp; make
+sudo ./tmate-ssh-server</pre>
+    <p>
+      Once your server is running, you must configure the clients to use your custom server. <br />
+You may specify your custom options in the <code>~/.tmate.conf</code> file. Here are the default options:
+    </p>
+    <pre>
+set -g tmate-server-host "ssh.tmate.io"
+set -g tmate-server-port 22
+set -g tmate-server-rsa-fingerprint     "SHA256:Hthk2T/M/Ivqfk1YYUn5ijC2Att3+UPzD7Rn72P5VWs"
+set -g tmate-server-ed25519-fingerprint "SHA256:jfttvoypkHiQYUqUCwKeqd9d1fJj/ZiQlFOHVl6E9sI"</pre>
+    <p>
+      If you are interested in fault tolerance, you should
+      setup the <code>tmate-server-host</code> host to resolve to multiple IPs.<br />
+      The tmate client will try them all, and keep to the most responsive one.<br />
+      <code>ssh.tmate.io</code> resolves to servers located in
+      San Francisco, New York, London, and Singapore.
+    </p>
+
+    <p>
+      To support named sessions, at this moment you must self-host the websocket server as well.
+      This is because the session unix sockets must be renamed, but the jail make it difficult.
+      You may follow the kubernetes configuration used for tmate.io at
+       <a href="https://github.com/tmate-io/tmate-kube/tree/master/prod">github.com/tmate-io/tmate-kube/prod</a>.
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2>Development environment</h2>
+    <p>
+      To faciliate developing, we run all the various tmate services with
+      <a href="https://tilt.build/">tilt</a>. It's a tool like
+      docker compose, but with features like live update.
+      When a source file changes, it is immediately copied into the
+      corresponding container and recompiled on the fly.
+      This feature is very useful for developing.
+    </p>
+    <p>
+      Here at the steps to setup the tmate dev environment:
+    </p>
+
+    <pre>
+# macOS specific. On linux you can use microk8 instead of minikube
+brew install minikube tilt
+minikube start
+
+# Install sources
+git clone https://github.com/tmate-io/tmate-ssh-server.git
+git clone https://github.com/tmate-io/tmate-websocket.git
+git clone https://github.com/tmate-io/tmate-master.git
+git clone https://github.com/tmate-io/tmate-kube.git
+
+# Compile and run the tmate servers in a local kubernetes environment
+cd tmate-kube/dev
+eval $(minikube docker-env)
+tilt up
+
+# Create the postgres database and do database migrations
+kubectl exec -it deploy/master mix do ecto.create, ecto.migrate
+
+# Finally, configure tmate to use the local dev environment 
+cat >> ~/.tmate.conf <<-EOF
+set tmate-server-host localhost
+set tmate-server-port 2200
+set -g tmate-server-rsa-fingerprint     "SHA256:pj6jMtCIgg26eJtHUro6KEmVOkVGmLdclArInW9LyLg"
+set -g tmate-server-ed25519-fingerprint "SHA256:ltQuqZqoF1GHYrrAVd99jW8W7vj/1gwoBwBF/FC9iuU"
+EOF</pre>
+    <p>
+      At this point you should be able to navigate to
+      <a href="http://localhost:4000">http://localhost:4000</a> and see the tmate homepage.
+      You should also be able to run <code>tmate</code> and a local connection string
+      should appear.
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2>Technical Details</h2>
+
+    <p>
+      <b class="warning">Warning: this information is outdated.</b>
+      A more up to date technical draft can be found
+      <a href="https://viennot.com/tmate.pdf">here [PDF]</a>, but is
+      still outdated. Sorry :(
+    </p>
+
+    </p>
+
+    <h4>
+      Connection process
+    </h4>
+    <p>
+      When launching tmate, an ssh connection is established to tmate.io (or your own server) in the
+      background through <a href="https://www.libssh.org/">libssh</a>.
+      The server ssh key signatures are specified upfront and are verified
+      during the DH exchange to prevent
+      <a href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack">man in the middle attacks</a>.
+    </p>
+    <p>
+      When a connection is established, a 150 bits session token is
+      generated, then a tmux server is spawned in a jail with no file system, with
+      its own <a href="https://lwn.net/Articles/531114/#series_index">PID namespace</a> to isolate the server from other processes, and no user
+      privileges. To allow this, all files required during the tmux server
+      execution are opened before getting jailed. These measures are in place to limit
+      the usefulness of possible exploits targeting the tmux server. The attacker
+      would not be able to access other sessions, ensuring confidentiality.
+    </p>
+    <p>
+      When an ssh client connects to tmate.io (or your own server), the tmux unix
+      socket is looked up on the file system. On lookup failures, a random sleep
+      is performed to prevent <a href="https://en.wikipedia.org/wiki/Timing_attack">timing attacks</a>,
+      otherwise a tmux client is spawned and connected to the remote tmux
+      server.
+    </p>
+
+    <h4>Protocol</h4>
+    <p>
+      The local and remote tmux servers communicate with a protocol on top of
+      <a href="https://msgpack.org/">msgpack</a>, which is gzipped over ssh for
+      network bandwidth efficiency as vim scrolling can generate massive amounts
+      of data.
+    </p>
+    <p>
+      In order to keep the remote tmux server in sync with the local tmux
+      server, PTY window pane's raw outputs are streamed individually as opposed
+      to synchronizing the entire tmux window. Furthermore, window layouts,
+      status bar changes, and copy mode state are also replicated. Finally, most
+      of the tmux commands (like bind-key) are replicated. This ensures that the
+      key bindings are the same on both side.
+    </p>
+    <p>
+      The remote client's keystrokes are parsed and the outcome is sent to the
+      local tmux server. This includes tmux commands such as split-window,
+      window pane keystrokes, or window size information.
+    </p>
+
+    <h4>Future work</h4>
+    <p>
+      This project can take many interesting directions. <br />
+      Here is what I have on the roadmap:
+    </p>
+    <ul>
+      <li>
+        Improve the headless experience. This is useful for managing a fleet of devices.
+      </li>
+      <li>
+        Make the user experience top notch. Please
+        <a href="https://github.com/tmate-io/tmate/issues">submit bug reports</a>
+        when you see issues.
+      </li>
+      <li>
+        Tolerate network failures. Dealing with reconnections and roaming (IP
+        changes) similarly to what <a href="https://mosh.mit.edu/">Mosh</a> offers.
+      </li>
+      <li>
+        <del>Support for read-only clients. This would be easy to do by providing
+        another session token, distinct from the read-write access one.</del>
+      </li>
+      <li>
+        <del>Getting low latencies for everyone requires having nodes spread out
+        all over the globe.</del>
+      </li>
+    </ul>
+
+  </div>
+</div>
+
+<div class="row">
+  <div class="span10 offset1">
+    <hr />
+    <h2>Get in touch</h2>
+    <p>
+      If you'd like to get in touch, here are your options:
+    </p>
+    <ul>
+      <li>
+        Submit bug reports on GitHub: <a href="https://github.com/tmate-io/tmate/issues">https://github.com/tmate-io/tmate/issues</a>.
+      </li>
+      <li>
+        Post a message on Google Groups: <a href="https://groups.google.com/group/tmate-io">https://groups.google.com/group/tmate-io</a>.
+      </li>
+      <li>
+        Or send an email to <a href="mailto:tmate-io@googlegroups.com">tmate-io@googlegroups.com</a>.
+      </li>
+      <li>
+        You can also send me a personal email at <a href="mailto:nico@tmate.io">nico@tmate.io</a>.
+      </li>
+    </ul>
+    <p>
+      Enjoy,<br />
+      Nico
+    </p>
+  </div>
+</div>

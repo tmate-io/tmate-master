@@ -17,6 +17,13 @@ defmodule Tmate.EventProjections.User do
     %User{id: user_id} |> Repo.delete(stale_error_field: :_stale_)
   end
 
+
+  def handle_event(:email_api_key, user_id, _timestamp, _params) do
+    user = Repo.get!(User, user_id)
+    Tmate.UserMailer.api_key_email(user)
+    |> Tmate.Mailer.deliver_now()
+  end
+
   def handle_event(:session_register, _sid, timestamp,
                    %{stoken: stoken, stoken_ro: stoken_ro}) do
     get_username_from = fn token ->

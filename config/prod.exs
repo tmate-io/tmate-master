@@ -66,3 +66,7 @@ config :tmate, Tmate.Scheduler,
     {"*/1 * * * *", {Tmate.SessionCleaner, :check_for_disconnected_sessions, []}},
     {"*/1 * * * *", {Tmate.SessionCleaner, :prune_sessions, []}},
   ]
+
+config :tmate, Tmate.Mailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: System.get_env("MAILGUN_API_KEY")
