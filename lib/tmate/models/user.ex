@@ -60,11 +60,9 @@ defmodule Tmate.User do
                      "0123456789"
 
     defp generate_random_char(chars, num_chars) do
-      <<rand_int>> = :crypto.strong_rand_bytes(1)
-      if rand_int < num_chars do
-        String.at(chars, rand_int)
-      else
-        generate_random_char(chars, num_chars)
+      case :crypto.strong_rand_bytes(1) do
+        <<rand_int>> when rand_int < num_chars -> String.at(chars, rand_int)
+        _ -> generate_random_char(chars, num_chars)
       end
     end
 
