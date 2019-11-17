@@ -18,6 +18,8 @@ COPY assets/package.json assets/package.json
 RUN cd assets && npm install
 
 COPY assets assets
+RUN cd assets && npm run deploy
+
 COPY lib lib
 COPY test test
 COPY config config
