@@ -1,0 +1,31 @@
+<p>Dear tmate user,</p>
+
+<p>Your API key is: <strong><%= @api_key %><strong></p>
+
+<p>You can use it to name sessions as such:</p>
+
+<ul>
+<li>From the CLI:
+<pre>
+tmate -k <%= @api_key %> -n testname</pre>
+</li>
+
+<li>
+Or from the <code>~/.tmate.conf</code> file:
+<pre>
+set tmate-api-key "<%= @api_key %>"
+set tmate-session-name "testname"</pre>
+</li>
+
+<p>It is also useful to put the API key in the tmate configuration file,
+and specify the session name on the CLI.</p>
+
+<p>Note that tmate version should be at least <strong>2.4.0</strong>.
+Check tmate version by running: <code>tmate -V</code></p>
+
+<p>
+<b>Access control must be considered when using named sessions, see <a href="https://tmate.io/#access_control">https://tmate.io/#access_control</a>.</b>
+</p>
+
+<p>Good day,<br />
+Jackie the robot</p>

@@ -69,4 +69,5 @@ config :tmate, Tmate.Scheduler,
 
 config :tmate, Tmate.Mailer,
   adapter: Bamboo.MailgunAdapter,
-  api_key: System.get_env("MAILGUN_API_KEY")
+  api_key: System.get_env("MAILGUN_API_KEY"),
+  domain: "mail.tmate.io" # todo make it an env var

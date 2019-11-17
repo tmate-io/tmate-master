@@ -233,7 +233,7 @@ set tmate-session-name "session-name"</pre>
     </p>
 
     <p>
-    If you get <code>illegal option -- n</code>, ensure you are
+    If you get the error <code>illegal option -- n</code>, ensure you are
     running tmate greater than <b>2.4.0</b>.
     You can check what tmate version you have by running: <code>tmate -V</code>.
     If your tmate version is too old, scroll up to the installation section.

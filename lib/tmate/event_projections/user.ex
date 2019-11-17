@@ -20,7 +20,7 @@ defmodule Tmate.EventProjections.User do
 
   def handle_event(:email_api_key, user_id, _timestamp, _params) do
     user = Repo.get!(User, user_id)
-    Tmate.UserMailer.api_key_email(user)
+    Tmate.Email.api_key_email(user)
     |> Tmate.Mailer.deliver_now()
   end
 
