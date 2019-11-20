@@ -207,3 +207,10 @@ p.fig-label {
 .warning {
   color: #d88;
 }
+
+.app-container p.loading {
+  margin: auto;
+  margin-top: 100px;
+  width: 200px;
+  text-align: center;
+}

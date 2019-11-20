@@ -27,7 +27,7 @@ defmodule Tmate.User do
   end
 
   def repr(user) do
-    "#{user.username} (#{user.email})"
+    "user=#{user.username} (#{user.email})"
   end
 
   def seen(user, timestamp) do

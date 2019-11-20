@@ -1,3 +1,5 @@
+<div class="container">
+
 <a href="https://github.com/tmate-io/tmate">
   <img style="position: absolute; top: 0; right:0; border: 0; width: 149px; height: 149px;" src="/img/fork-me-on-github-right-orange@2x.png" alt="Fork me on GitHub">
 </a>
@@ -544,3 +546,23 @@ EOF</pre>
     </p>
   </div>
 </div>
+
+</div>
+
+<div class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div class="digitalocean">
+          <p>Proudly hosted by</p>
+          <p><a href="https://www.digitalocean.com/"><img src="/img/digitalocean.png" alt="DigialOcean"/></a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+<script src="/js/jquery-2.0.2.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+

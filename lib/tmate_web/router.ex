@@ -29,7 +29,7 @@ defmodule TmateWeb.Router do
   scope "/api", TmateWeb do
     pipe_through :api
 
-    get "/t/:token", SessionController, :show
+    get "/t/*token", TerminalController, :show_json
   end
 
   scope "/internal_api", TmateWeb do
@@ -42,11 +42,10 @@ defmodule TmateWeb.Router do
   scope "/", TmateWeb do
     pipe_through :browser
 
-    get "/t/:token", PageController, :show
+    get "/t/*token", TerminalController, :show
 
     get "/", SignUpController, :new
     post "/", SignUpController, :create
-    # get "/*path", PageController, :show
   end
 
   if Mix.env == :dev do

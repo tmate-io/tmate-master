@@ -14,12 +14,16 @@ defmodule Tmate.EventProjections.User do
   end
 
   def handle_event(:expire_user, user_id, _timestamp, _params) do
+    if (user = Repo.get(User, user_id)) do
+      Logger.info("Expire #{User.repr(user)}")
+    end
     %User{id: user_id} |> Repo.delete(stale_error_field: :_stale_)
   end
 
 
   def handle_event(:email_api_key, user_id, _timestamp, _params) do
     user = Repo.get!(User, user_id)
+    Logger.info("Emailing api_key to #{User.repr(user)}")
     Tmate.Email.api_key_email(user)
     |> Tmate.Mailer.deliver_now()
   end

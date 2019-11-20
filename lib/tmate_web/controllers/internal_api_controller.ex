@@ -36,6 +36,7 @@ defmodule TmateWeb.InternalApiController do
                                  created_at: s.created_at,
                                  disconnected_at: s.disconnected_at,
                                  closed: s.closed},
+                       order_by: [desc: s.created_at],
                        limit: 1)
     if session do
       conn

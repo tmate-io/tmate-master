@@ -1,0 +1,14 @@
+<div class="app-container">
+  <p class="loading">
+    Loading...
+  </p>
+</div>
+
+<script src="<%= Routes.static_url(@conn, "/js/app.js") %>"></script>
+<script>
+var rootElement = document.getElementsByClassName('app-container')[0];
+window.initTerminal(rootElement, "<%= @token %>");
+</script>
+
+<script src="/js/jquery-2.0.2.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>

@@ -12,7 +12,6 @@ defmodule TmateWeb.SignUpController do
 
     changeset = User.changeset(%User{}, %{allow_mailing_list: true})
     conn
-    |> put_layout("static.html")
     |> clear_flash()
     |> render("home.html", changeset: changeset, flash_info: flash_msg)
   end
@@ -53,7 +52,6 @@ defmodule TmateWeb.SignUpController do
         Logger.warn("signup invalid: #{inspect(changeset)}")
         conn
         |> put_status(400)
-        |> put_layout("static.html")
         |> render("home.html", changeset: changeset, flash_info: nil)
       :ok ->
         Tmate.Event.emit!(:user_create, user_id, changeset.changes)

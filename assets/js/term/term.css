@@ -1,0 +1,74 @@
+.session-status h3 {
+  text-align: center;
+}
+
+.session span.win-id {
+  color: #666;
+}
+
+.session {
+  margin: auto;
+}
+
+.session ul {
+}
+
+.window {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.pane_container {
+  position: absolute;
+}
+
+.pane_container.active {
+  -webkit-box-shadow: rgba(255, 255, 255, 0.40) 0 0px 7px;
+     -moz-box-shadow: rgba(255, 255, 255, 0.40) 0 0px 7px;
+          box-shadow: rgba(255, 255, 255, 0.40) 0 0px 7px;
+}
+
+.terminal_font {
+  display: inline-block;
+  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.terminal {
+  display: inline-block;
+  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 14px;
+
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+
+  padding: 4px 1px;
+
+  -webkit-box-shadow: 0 1px rgba(255, 255, 255, 0.1);
+     -moz-box-shadow: 0 1px rgba(255, 255, 255, 0.1);
+          box-shadow: 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.reverse-video {
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
+
+.ssh-cstr {
+  margin-top: 1em;
+  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  display: block;
+  text-align: center;
+}
+
+.faq {
+  margin-top: 1em;
+  text-align: center;
+  color: #666;
+  font-size: 10px;
+}
