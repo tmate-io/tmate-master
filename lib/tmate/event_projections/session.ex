@@ -62,8 +62,9 @@ defmodule Tmate.EventProjections.Session do
   end
 
   def handle_event(:session_join, sid, timestamp,
-                   %{id: cid, ip_address: ip_address, type: _type, readonly: readonly}) do
-    Logger.info("Client joined session sid=#{sid}, cid=#{cid}")
+                   %{id: cid, ip_address: ip_address, type: type, readonly: readonly}) do
+    Logger.info("Client joined session sid=#{sid}, cid=#{cid}" <>
+                ", type=#{type}, readonly=#{readonly}")
 
     client_params = %{id: cid, session_id: sid,
                       ip_address: ip_address, joined_at: timestamp, readonly: readonly}

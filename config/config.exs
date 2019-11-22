@@ -30,6 +30,9 @@ config :tmate, Tmate.Monitoring.Endpoint,
   enabled: true,
   cowboy_opts: [port: 9100]
 
+config :tmate, Tmate.MonitoringCollector,
+  metrics_enabled: true
+
 config :prometheus, Tmate.PlugExporter,
   path: "/metrics",
   format: :auto,

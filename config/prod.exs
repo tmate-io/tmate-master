@@ -59,6 +59,9 @@ config :tzdata, :autoupdate, :disabled
 machine_index = System.get_env("HOSTNAME", "master-0")
                   |> String.split("-") |> Enum.at(-1) |> String.to_integer()
 
+config :tmate, Tmate.MonitoringCollector,
+  metrics_enabled: machine_index == 0
+
 config :tmate, Tmate.Scheduler,
   enabled: machine_index == 0,
   jobs: [
