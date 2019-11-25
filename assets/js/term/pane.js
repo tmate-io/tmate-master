@@ -1,6 +1,8 @@
 import React from "react"
 import ReactDOM from 'react-dom';
-import Terminal from "./term"
+import { Terminal } from 'xterm';
+import 'xterm/css/xterm.css';
+import { Attributes, FgFlags, BgFlags } from "./xterm_constants.ts";
 
 /* tmux grid attrs */
 const GRID_ATTR_BRIGHT     = 0x1
@@ -31,22 +33,34 @@ export default class Pane extends React.Component {
   componentDidMount() {
     if (this.term === undefined) {
       let term = new Terminal({
-        screenKeys: true,
+        // screenKeys: true,
         cursorBlink: false,
         rows: this.props.rows,
         cols: this.props.cols,
-        useFocus: false,
-        tmate_pane: this,
-      })
+        disableStdin: false, /* set with readonly mode */
+        fontFamily: "DejaVu Sans Mono, Liberation Mono, monospace",
+        fontSize: 12,
+        // lineHeight: 14/12,
+        macOptionIsMeta: true,
+        LogLevel: 'debug'
+        // useFocus: false,
+        // tmate_pane: this
+      });
 
-      term.on('data', data => {
+
+      /* TODO onBinary */
+      term.onData(data => {
         this.props.session.send_pty_keys(this.props.id, data)
       })
 
-      term.debug = true
-      term.on('error', msg => console.log(`error: ${msg}`))
+      window.term = term
+      // term.debug = true
+      // term.on('error', msg => console.log(`error: ${msg}`))
 
       term.open(ReactDOM.findDOMNode(this))
+
+      const dims = term._core._renderService.dimensions;
+      this.props.session.set_char_size(dims.actualCellWidth, dims.actualCellHeight);
 
       if (this.props.active)
         term.focus()
@@ -71,14 +85,20 @@ export default class Pane extends React.Component {
 
   componentDidUpdate() {
     this.term.resize(this.props.cols, this.props.rows)
+
     if (this.props.active)
       this.term.focus()
+
+    this.term._core.cursorHidden = !this.props.active;
+    this.term.refresh(this.term.buffer.cursorY, this.term.buffer.cursorY);
   }
 
   componentWillUnmount() {
     this.props.session.on_umount_pane(this.props.id)
-    this.term.close()
-    this.term = undefined
+    if (this.term) {
+      this.term.dispose()
+      this.term = undefined
+    }
   }
 
   on_bootstrap_grid(...args) {
@@ -90,79 +110,75 @@ export default class Pane extends React.Component {
   }
 }
 
-const bootstrap_mode = (term, mode) => {
-  if (mode & MODE_CURSOR)
-    term.applicationCursor = true
-  if (mode & MODE_WRAP)
-    term.wraparoundMode = true
-  if (mode & ALL_MOUSE_MODES) {
-    term.x10Mouse = false
-    term.vt200Mouse = true
-    term.normalMouse = false
-    term.mouseEvents = true
-    term.element.style.cursor = 'default'
-  }
-  if (mode & MODE_FOCUSON)
-    term.sendFocus = true
-  if (mode & MODE_MOUSE_UTF8)
-    term.utfMouse = true
-  if (mode & MODE_MOUSE_SGR)
-    term.sgrMouse = true
-  if (!(mode & MODE_CURSOR))
-    term.cursorHidden = true
-}
-
 const bootstrap_grid = (term, cursor_pos, mode, grid_data) => {
-  const [cx, cy] = cursor_pos
-
   const term_attr = packed_attrs => {
     let fg    = packed_attrs & 0xFF
     let bg    = (packed_attrs >> 8)  & 0xFF
     let attr  = (packed_attrs >> 16) & 0xFF
     let flags = (packed_attrs >> 24) & 0xFF
 
-    if (fg == 8)
-      fg = (term.defAttr >> 9) & 0x1ff;
-    if (bg == 8)
-      bg = term.defAttr & 0x1ff;
+    if (fg != 8)
+      fg |= Attributes.CM_P256
+    if (bg != 8)
+      bg |= Attributes.CM_P256
 
-    let new_flags = 0
-    if (attr & GRID_ATTR_BRIGHT)     new_flags |= 1  /* bold */
-    if (attr & GRID_ATTR_UNDERSCORE) new_flags |= 2  /* underline */
-    if (attr & GRID_ATTR_BLINK)      new_flags |= 4  /* blink */
-    if (attr & GRID_ATTR_REVERSE)    new_flags |= 8  /* inverse */
-    if (attr & GRID_ATTR_HIDDEN)     new_flags |= 16 /* invisible */
+    if (attr & GRID_ATTR_BRIGHT)     fg |= FgFlags.BOLD
+    if (attr & GRID_ATTR_UNDERSCORE) fg |= FgFlags.UNDERLINE
+    if (attr & GRID_ATTR_BLINK)      fg |= FgFlags.BLINK
+    if (attr & GRID_ATTR_REVERSE)    fg |= FgFlags.INVERSE
+    if (attr & GRID_ATTR_HIDDEN)     fg |= FgFlags.INVISIBLE
+    if (attr & GRID_ATTR_DIM)        bg |= BgFlags.DIM
+    if (attr & GRID_ATTR_ITALICS)    bg |= BgFlags.ITALIC
 
-    let new_attr = (new_flags << 18) | (fg << 9) | bg
-
-    return new_attr
+    return [fg, bg]
   }
 
-  term.lines = []
-  const cols = term.cols
+  const [cursor_x, cursor_y] = cursor_pos
+  const [cols, rows] = [term.rows, term.cols]
+  const buffer = term.buffer._buffer;
 
-  for (const line_data of grid_data) {
+  /*
+   * This gets us an empty line. We should call
+   * getBlankLine(DEFAULT_ATTR_DATA), but we don't have access
+   * to the constant.
+   */
+  buffer.clear();
+  buffer.fillViewportRows();
+  const emptyLine = buffer.lines.get(0).clone();
+
+  grid_data.forEach((line_data, i) => {
     const [chars, attrs] = line_data
 
-    let line = []
-    for (let i = 0; i < cols; i++) {
-      // careful with multi-cells utf8 chars
-      let c = chars[i]
-      if (c === undefined)
-        line[i] = [term.defAttr, ' ']
-      else
-        line[i] = [term_attr(attrs[i]), c]
+    let line = emptyLine.clone();
+
+    for (let j = 0; j < chars.length; j++) {
+      let c = chars.charCodeAt(j)
+      const width = 1; /* TODO */
+      const [fg, bg] = term_attr(attrs[j])
+      line.setCellFromCodePoint(j, c, width, fg, bg)
     }
-    term.lines.push(line)
-  }
 
-  term.ydisp = grid_data.length - term.rows
-  term.ybase = term.ydisp
+    buffer.lines.push(line)
+  });
 
-  term.x = cx
-  term.y = cy
+  buffer.ydisp = grid_data.length
+  buffer.ybase = buffer.ydisp
 
-  bootstrap_mode(term, mode)
+  buffer.x = cursor_x
+  buffer.y = cursor_y
+
+  const core = term._core
+  // if (mode & MODE_CURSOR)
+    // core.applicationCursor = true
+  core.wraparoundMode = !!(mode & MODE_WRAP)
+  if (mode & ALL_MOUSE_MODES)
+    core._coreMouseService.activeProtocol = "VT200"
+  core.sendFocus = !!(mode & MODE_FOCUSON)
+  // if (mode & MODE_MOUSE_UTF8)
+    // core.utfMouse = true
+  // if (mode & MODE_MOUSE_SGR)
+    // core.sgrMouse = true
+  core.cursorHidden = !(mode & MODE_CURSOR);
 
   term.refresh(0, term.rows - 1);
 }

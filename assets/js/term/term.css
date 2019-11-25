@@ -7,10 +7,15 @@
 }
 
 .session {
-  margin: auto;
+  margin: 5px auto;
 }
 
-.session ul {
+.session .nav-tabs {
+  margin-bottom: 0;
+}
+
+.session .nav-tabs > li > a {
+  padding: 3px 6px 3px 6px;
 }
 
 .window {
@@ -23,38 +28,14 @@
 }
 
 .pane_container.active {
-  -webkit-box-shadow: rgba(255, 255, 255, 0.40) 0 0px 7px;
-     -moz-box-shadow: rgba(255, 255, 255, 0.40) 0 0px 7px;
-          box-shadow: rgba(255, 255, 255, 0.40) 0 0px 7px;
-}
-
-.terminal_font {
-  display: inline-block;
-  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
-  font-size: 12px;
-  line-height: 14px;
+  box-shadow: rgba(255, 255, 255, 0.40) 0 0px 7px;
 }
 
 .terminal {
-  display: inline-block;
-  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
-  font-size: 12px;
-  line-height: 14px;
-
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-          border-radius: 3px;
-
-  padding: 4px 1px;
-
-  -webkit-box-shadow: 0 1px rgba(255, 255, 255, 0.1);
-     -moz-box-shadow: 0 1px rgba(255, 255, 255, 0.1);
-          box-shadow: 0 1px rgba(255, 255, 255, 0.1);
-}
-
-.reverse-video {
-  -webkit-filter: invert(100%);
-  filter: invert(100%);
+  overflow: hidden;
+  border-radius: 3px;
+  padding: 4px 1px; /* XXX change the session.js terminal_padding_size */
+  box-shadow: 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .ssh-cstr {

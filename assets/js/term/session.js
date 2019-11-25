@@ -62,9 +62,11 @@ class EventBuffer {
 export default class Session extends React.Component {
   state = { ws_state: WS_CONNECTING }
 
-  componentWillMount() {
-    this.char_size = this.compute_char_size()
-    this.terminal_padding_size = this.compute_terminal_padding()
+  constructor() {
+    super()
+    this.char_size = {width: 7, height: 14};
+    /* From the padding in term.css : .terminal */
+    this.terminal_padding_size = {width: 1*2, height: 4*2};
   }
 
   componentDidMount() {
@@ -91,22 +93,13 @@ export default class Session extends React.Component {
     this.disconnect()
   }
 
-  compute_char_size() {
-    let c = $("<div style='position: absolute, visibility: hidden" +
-                          "height: auto, width: auto' class='terminal_font'>X</div>")
-    c.appendTo($('body'))
-    let size = c[0].getBoundingClientRect()
-    c.remove()
-    return size
-  }
-
-  compute_terminal_padding() {
-    let c = $("<div class='terminal' style='position: absolute, visibility: hidden" +
-                                            "height: auto, width: auto' />")
-    c.appendTo($('body'))
-    let size = c[0].getBoundingClientRect()
-    c.remove()
-    return size
+  set_char_size(width, height) {
+    if (width && height && width > 0 && height > 0) {
+      const old_size = this.char_size;
+      this.char_size = {width, height};
+      if (old_size.width != width || old_size.height != height)
+        this.forceUpdate();
+    }
   }
 
   get_row_width(num_chars) {
