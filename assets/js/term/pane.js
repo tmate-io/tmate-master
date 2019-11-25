@@ -70,6 +70,7 @@ export default class Pane extends React.Component {
       this.props.session.get_pane_event_buffer(this.props.id).set_handler({
         on_pty_data: this.on_pty_data.bind(this),
         on_bootstrap_grid: this.on_bootstrap_grid.bind(this),
+        on_sync_copy_mode: this.on_sync_copy_mode.bind(this),
       })
     }
   }
@@ -107,6 +108,35 @@ export default class Pane extends React.Component {
 
   on_pty_data(data) {
     this.term.write(data)
+  }
+
+  on_sync_copy_mode(data) {
+    const term = this.term
+    const select = term._core._selectionService;
+    const top_line_offset = term.buffer._buffer.lines.length - term.rows;
+
+    if (data && data.length == 0) {
+      term._core.buffer.ydisp = top_line_offset
+      select.clearSelection();
+      term.refresh(0, term.rows-1);
+      return;
+    }
+
+    let [backing, oy, cx, cy, sel, status] = data;
+
+    if (sel && sel.length > 0) {
+      let [selx, sely, flags] = sel
+      sely = term.rows - sely
+      select._model.selectionStart = [cx+1, top_line_offset + cy-oy]
+      select._model.selectionEnd = [selx, top_line_offset + sely-1]
+      select.refresh();
+    }
+
+    let new_ydisp = Math.max(top_line_offset - oy, 0)
+    if (term._core.buffer.ydisp != new_ydisp) {
+      term._core.buffer.ydisp = new_ydisp;
+      term.refresh(0, term.rows-1);
+    }
   }
 }
 

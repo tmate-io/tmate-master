@@ -81,6 +81,7 @@ export default class Session extends React.Component {
     this.daemon_handlers.set(TMATE_OUT_PTY_DATA,    this.on_pty_data)
     this.daemon_handlers.set(TMATE_OUT_STATUS,      this.on_status)
     this.daemon_handlers.set(TMATE_OUT_FIN,         this.on_fin)
+    this.daemon_handlers.set(TMATE_OUT_SYNC_COPY_MODE, this.on_sync_copy_mode)
 
     this.pane_events = new Map()
 
@@ -207,6 +208,10 @@ export default class Session extends React.Component {
 
   on_pty_data(pane_id, data) {
     this.emit_pane_event(pane_id, "on_pty_data", data)
+  }
+
+  on_sync_copy_mode(pane_id, data) {
+    this.emit_pane_event(pane_id, "on_sync_copy_mode", data)
   }
 
   render_message(msg) {
