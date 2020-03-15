@@ -60,6 +60,7 @@ config :tmate, :master,
 
 config :tzdata, :autoupdate, :disabled
 
+# This requires a statefulset setup
 machine_index = System.get_env("HOSTNAME", "master-0")
                   |> String.split("-") |> Enum.at(-1) |> String.to_integer()
 
