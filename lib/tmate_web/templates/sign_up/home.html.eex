@@ -118,7 +118,7 @@ make install</pre>
         <p>
         Once installed, launch tmate with <code>tmate</code>.
         You should see something like <code>ssh PMhmes4XeKQyBR2JtvnQt6BJw@nyc1.tmate.io</code>
-        appearing. This allow others to join your terminal session.
+        appearing. This allows others to join your terminal session.
         All users see the same terminal content at all time.
         This is useful for pair programming
         where two people share the same screen, but have different keyboards.
