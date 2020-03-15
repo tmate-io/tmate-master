@@ -37,7 +37,7 @@ config :logger, level: :info
 pg = URI.parse(System.get_env("PG_URI", "pg://user:pass@host:5432/db"))
 config :tmate, Tmate.Repo,
   adapter: Ecto.Adapters.Postgres,
-  timeout: 60000,
+  timeout: 60_000,
   username: pg.userinfo |> String.split(":") |> Enum.at(0),
   password: pg.userinfo |> String.split(":") |> Enum.at(1),
   database: pg.path |> String.split("/") |> Enum.at(1),
@@ -45,7 +45,11 @@ config :tmate, Tmate.Repo,
   hostname: pg.host,
   pool_size: System.get_env("PG_POOLSIZE", "20") |> String.to_integer(),
   ssl: System.get_env("PG_SSL_CA_CERT") != nil,
-  ssl_opts: [cacertfile: System.get_env("PG_SSL_CA_CERT")]
+  ssl_opts: [cacertfile: System.get_env("PG_SSL_CA_CERT")],
+   # x4 all queue_target and queue_target settings,
+   # in the hope to reduce the number of DBConnection Errors
+  queue_target: 200,
+  queue_interval: 4000
 
 
 config :tmate, Tmate.Monitoring.Endpoint,
