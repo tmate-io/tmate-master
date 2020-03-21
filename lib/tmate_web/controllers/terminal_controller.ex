@@ -8,6 +8,7 @@ defmodule TmateWeb.TerminalController do
   def show(conn, %{"token" => token_path}) do
     token = Enum.join(token_path, "/") # tokens can have /, and comes in as an array
     conn
+    |> delete_resp_header("x-frame-options") # so it's embeddable in iframes.
     |> render("show.html", token: token)
   end
 
