@@ -117,4 +117,69 @@ defmodule SessionTest do
     session = Repo.preload(session, :clients)
     assert session.clients |> Enum.count == 1
   end
+
+  # TODO This test should probably be in a seperate file
+  test "prune_sessions()" do
+    se1 = emit_event(build(:event_session_register))
+    se2 = emit_event(build(:event_session_register))
+    se3 = emit_event(build(:event_session_register))
+
+    now = DateTime.utc_now
+    _de2 = emit_event(build(:event_session_disconnect, entity_id: se2.entity_id), DateTime.add(now, -1000, :second))
+    _de3 = emit_event(build(:event_session_disconnect, entity_id: se3.entity_id), DateTime.add(now, -10000, :second))
+
+    assert Repo.one(from Session, select: count("*")) == 3
+    Tmate.SessionCleaner.prune_sessions({1, "hour"})
+
+    assert (Repo.all(Session) |> Enum.map(& &1.id) |> Enum.sort()) ==
+           ([se1.entity_id, se2.entity_id] |> Enum.sort())
+  end
+
+  # TODO This test should probably be in a seperate file
+  test "check_for_disconnected_sessions" do
+    defmodule WsApi do
+      # already disconnected. Should not be checked
+      @s1_id UUID.uuid1
+      # will be flagged as disconnected, should be cleanup up
+      @s2_id UUID.uuid1
+      # will be flagged as disconnected, but reconnect events is triggered at the same time, no cleanup
+      @s3_id UUID.uuid1
+      # remains connected, no cleanup
+      @s4_id UUID.uuid1
+
+      def get_stale_sessions(session_ids, _base_url) do
+        assert (session_ids |> Enum.sort()) ==
+               ([@s2_id, @s3_id, @s4_id] |> Enum.sort())
+
+        emit_event(build(:event_session_register, entity_id: @s3_id, generation: 2, reconnected: true))
+
+        {:ok, [@s2_id, @s3_id]}
+      end
+
+      def session_ids() do
+        [@s1_id, @s2_id, @s3_id, @s4_id]
+      end
+    end
+
+    [s1_id, s2_id, s3_id, s4_id] = WsApi.session_ids()
+
+    emit_event(build(:event_session_register, entity_id: s1_id))
+    emit_event(build(:event_session_register, entity_id: s2_id))
+    emit_event(build(:event_session_register, entity_id: s3_id))
+    emit_event(build(:event_session_register, entity_id: s4_id))
+
+    emit_event(build(:event_session_disconnect, entity_id: s1_id))
+
+    assert Repo.get(Session, s1_id).disconnected_at != nil
+    assert Repo.get(Session, s2_id).disconnected_at == nil
+    assert Repo.get(Session, s3_id).disconnected_at == nil
+    assert Repo.get(Session, s4_id).disconnected_at == nil
+
+    Tmate.SessionCleaner.check_for_disconnected_sessions(SessionTest.WsApi)
+
+    assert Repo.get(Session, s1_id).disconnected_at != nil
+    assert Repo.get(Session, s2_id).disconnected_at != nil
+    assert Repo.get(Session, s3_id).disconnected_at == nil
+    assert Repo.get(Session, s4_id).disconnected_at == nil
+  end
 end
