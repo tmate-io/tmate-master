@@ -25,43 +25,36 @@ defmodule Tmate.SessionCleaner do
     :ok
   end
 
-  def check_for_disconnected_sessions() do
+  def check_for_disconnected_sessions(wsapi_module \\ Tmate.WsApi) do
     Logger.info("Checking for disconnected sessions")
     from(s in Session, where: is_nil(s.disconnected_at),
-                       select: {s.id, s.ws_url_fmt})
+                       select: {s.id, s.generation, s.ws_url_fmt})
     |> Repo.all
-    |> Enum.group_by(fn {_id, ws_url_fmt} -> ws_url_fmt end,
-                     fn {id, _ws_url_fmt} -> id end)
-    |> Enum.each(fn {ws_url_fmt, session_ids} ->
+    |> Enum.group_by(fn {_id, _generation, ws_url_fmt} -> ws_url_fmt end,
+                     fn {id, generation, _ws_url_fmt} -> {id, generation} end)
+    |> Enum.each(fn {ws_url_fmt, sessions} ->
+      sid_generations = sessions |> Map.new
       base_url = Session.wsapi_base_url(ws_url_fmt)
-      check_for_disconnected_sessions(base_url, session_ids)
+      check_for_disconnected_sessions(wsapi_module, base_url, sid_generations)
     end)
 
     :ok
   end
 
-  defp check_for_disconnected_sessions(base_url, session_ids) do
+  defp check_for_disconnected_sessions(wsapi_module, base_url, sid_generations) do
     # When a websocket serves goes down, it does not necessarily notify disconnections.
     # We'll emit these missings events here.
 
-    # 1) we get the generations of the sessions
-    sid_generations =
-      from(e in Event, where: e.entity_id in ^session_ids,
-                       group_by: e.entity_id,
-                       select: {e.entity_id, max(e.generation)})
-      |> Repo.all
-      |> Map.new
-
-    # 2) we get the stale entries
+    # 1) we get the stale entries
     case sid_generations
          |> Map.keys
-         |> Tmate.WsApi.get_stale_sessions(base_url) do
+         |> wsapi_module.get_stale_sessions(base_url) do
       {:ok, stale_ids} ->
         stale_ids
         |> Enum.map(& {&1, sid_generations[&1]})
         |> Enum.each(fn {sid, generation} ->
-  # 3) emit the events for the stale entries
-          Logger.warn("Emitting disconnect event for stale session id=#{sid}")
+          # 2) emit the events for the stale entries
+          Logger.warn("Stale session id=#{sid}")
           Event.emit!(:session_disconnect, sid, DateTime.utc_now, generation, %{})
         end)
       {:error, _} ->
