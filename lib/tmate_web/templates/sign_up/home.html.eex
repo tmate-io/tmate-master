@@ -7,6 +7,7 @@
 <div class="row">
   <div class="span10 offset1">
     <div class="hero-unit">
+      <img src="/img/logo.png">
       <h1>tmate</h1>
       <h2>Instant terminal sharing</h2>
     </div>
