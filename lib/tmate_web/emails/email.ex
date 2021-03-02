@@ -12,7 +12,7 @@ defmodule Tmate.Email do
 
   defp base_email do
     new_email()
-    |> from("tmate <support@tmate.io>")
+    |> from(Application.fetch_env!(:tmate, Tmate.Mailer)[:from])
     |> put_html_layout({TmateWeb.LayoutView, "email.html"})
   end
 end
