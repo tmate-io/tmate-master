@@ -75,7 +75,18 @@ config :tmate, Tmate.Scheduler,
     {"*/1 * * * *", {Tmate.SessionCleaner, :prune_sessions, []}},
   ]
 
+email_adapter_opts = case (System.get_env("EMAIL_ADAPTER", "mailgun") |> String.downcase) do
+  "smtp" -> [
+    adapter: Bamboo.SMTPAdapter,
+    server: System.get_env("SMTP_HOST"),
+    port: System.get_env("SMTP_PORT"),
+    hostname: System.get_env("SMTP_DOMAIN")]
+  "mailgun" -> [
+    adapter: Bamboo.MailgunAdapter,
+    api_key: System.get_env("MAILGUN_API_KEY"),
+    domain: System.get_env("MAILGUN_DOMAIN")]
+  other -> raise "Unknown email handler: '#{other}'"
+end
+
 config :tmate, Tmate.Mailer,
-  adapter: Bamboo.MailgunAdapter,
-  api_key: System.get_env("MAILGUN_API_KEY"),
-  domain: System.get_env("MAILGUN_DOMAIN")
+  email_adapter_opts

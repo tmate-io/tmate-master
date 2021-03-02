@@ -54,6 +54,7 @@ defmodule Tmate.MixProject do
       {:timex, "~> 3.0"},
       {:httpoison, ">= 0.0.0"},
       {:bamboo, "~> 1.3"},
+      {:bamboo_smtp, "~> 3.0.0"},
     ]
   end
 
