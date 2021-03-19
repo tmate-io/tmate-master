@@ -45,6 +45,7 @@
         <li><a data-toggle="tab" href="#openbsd">OpenBSD</a></li>
         <li><a data-toggle="tab" href="#gentoo">Gentoo</a></li>
         <li><a data-toggle="tab" href="#arch">ArchLinux</a></li>
+        <li><a data-toggle="tab" href="#openwrt">OpenWrt</a></li>
         <li><a data-toggle="tab" href="#static">Static Builds</a></li>
         <li><a data-toggle="tab" href="#source">Source</a></li>
       </ul>
@@ -79,6 +80,10 @@
         <div class="tab-pane" id="arch">
           <pre>pacman -S tmate</pre>
           <p>The ArchLinux package is maintained by <a href="https://github.com/eworm-de">Christian Hesse</a>.</p>
+        </div>
+        <div class="tab-pane" id="openwrt">
+          <pre>opkg install tmate</pre>
+          <p>The OpenWrt package is maintained by <a href="https://github.com/1715173329">Tianling Shen</a>.</p>
         </div>
         <div class="tab-pane" id="static">
           <p>We provide i386, x86_64, arm32v6, arm32v7, and arm64v8 linux static builds for convenience.</p>
