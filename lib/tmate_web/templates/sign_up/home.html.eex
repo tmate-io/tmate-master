@@ -87,7 +87,7 @@
           <p>The OpenWrt package is maintained by <a href="https://github.com/1715173329">Tianling Shen</a>.</p>
         </div>
         <div class="tab-pane" id="static">
-          <pre>curl -fsSL https://github.com/tmate-io/tmate/raw/get-tmate.sh -o get-tmate.sh && sh get-tmate.sh
+          <pre>curl -fsSL https://github.com/tmate-io/tmate/raw/master/get-tmate.sh -o get-tmate.sh && sh get-tmate.sh
           <p>Easyinstall (Defaults to ./bin, and inc. sha256 verify the download) get help with:
           $ sh get-tmate.sh -h # get help</p>
           <p>We provide i386, x86_64, arm32v6, arm32v7, and arm64v8 linux static builds for convenience.</p>
@@ -554,7 +554,7 @@ EOF</pre>
       Nico
     </p>
   </div>
-</div>
+</div>raw
 
 </div>
 
