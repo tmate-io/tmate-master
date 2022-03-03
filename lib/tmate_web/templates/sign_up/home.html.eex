@@ -45,7 +45,7 @@
         <li><a data-toggle="tab" href="#freebsd">FreeBSD</a></li>
         <li><a data-toggle="tab" href="#openbsd">OpenBSD</a></li>
         <li><a data-toggle="tab" href="#gentoo">Gentoo</a></li>
-        <li><a data-toggle="tab" href="#arch">ArchLinux</a></li>
+        <li><a data-toggle="tab" href="#arch">Arch Linux</a></li>
         <li><a data-toggle="tab" href="#openwrt">OpenWrt</a></li>
         <li><a data-toggle="tab" href="#static">Static Builds</a></li>
         <li><a data-toggle="tab" href="#source">Source</a></li>
@@ -80,7 +80,7 @@
         </div>
         <div class="tab-pane" id="arch">
           <pre>pacman -S tmate</pre>
-          <p>The ArchLinux package is maintained by <a href="https://github.com/eworm-de">Christian Hesse</a>.</p>
+          <p>The Arch Linux package is maintained by <a href="https://github.com/eworm-de">Christian Hesse</a>.</p>
         </div>
         <div class="tab-pane" id="openwrt">
           <pre>opkg install tmate</pre>
